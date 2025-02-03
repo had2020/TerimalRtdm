@@ -43,3 +43,23 @@ raw_mode(false); // disable to release the user terimal
 ```
 
 ## Core functions 
+App Struct
+
+- Used to automatically hold variables outside the app loop.
+- Holds the key buffer, from input and the key pressed for input checking in app. loop.
+``` Rust
+let mut app = App::new();
+```
+
+Clear()
+
+- Used to clear the screen.
+- Tip: follow the structure in the later section of the Docs.
+``` Rust
+    clear();
+```
+
+
+## How it works
+
+## Key and Color names map
