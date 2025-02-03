@@ -114,6 +114,10 @@ collected_key_presses()
 
 collect_presses() 
 
+- collects the current press in a single halt, and stores it in App variable.
+- Later inout statements refer to this value, to prevent unneeded halts.
+- Used after clear, before any input if statements.
+
 
 
 
