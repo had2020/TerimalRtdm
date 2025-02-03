@@ -51,12 +51,27 @@ App Struct
 let mut app = App::new();
 ```
 
-Clear()
+clear()
 
 - Used to clear the screen.
 - Tip: follow the structure in the later section of the Docs.
 ``` Rust
-    clear();
+clear();
+```
+
+cursor_state() 
+
+- Used to toggle on and off the Cursor
+``` Rust
+cursor_state(false);
+```
+
+raw_mode()
+
+- Used to enable raw input, which is required for most Terimal apps.
+- Tip: Toggle true
+``` Rust
+raw_mode(true)
 ```
 
 
