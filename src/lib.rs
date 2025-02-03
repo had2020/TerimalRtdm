@@ -12,11 +12,15 @@ pub fn cursor_state(enabled: bool) {
 
 pub struct App {
     pub key_buffer: [u8; 3],
+    pub key_pressed: String,
 }
 
 impl App {
     pub fn new(x: usize, y: usize) -> Self {
-        App { key_buffer: [0; 3] }
+        App {
+            key_buffer: [0; 3],
+            key_pressed: String::new(),
+        }
     }
 }
 
@@ -227,7 +231,15 @@ pub fn find_key_pressed(app: &mut App) -> &'static str {
     pressed_key
 }
 
+// not used, due to key trottling issues
 pub fn collected_key_presses(app: &mut App) -> &'static str {
-    // TODO keys checked outside function to prevent hold or option to
     find_key_pressed(app)
+}
+
+#[macro_export]
+macro_rules! app_loop {
+    ($app:expr, $code:expr) => {
+        find_key_pressed($app);
+        $app.key_pressed = $code;
+    };
 }
