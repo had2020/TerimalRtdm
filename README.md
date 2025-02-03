@@ -1,5 +1,13 @@
-# TerimalRtdm
+## TerimalRtdm
 Ideomatic Rust Terimal Interface Library for CUIs
+
+## Why use it 
+This framework provides many usful functions that abstract ACSI escape keys,
+allowing for easy implementation for a Terimal Interface. 
+
+- Many features like key_press(), allows you to check a key without halting for a check.
+- You can write Terimal GUIs much faster!
+- Lots of functions allowing for more customizability, while keeping code readable and ideomatic.
 
 # Example app
 This is an example of using the framework,
@@ -33,3 +41,5 @@ loop {
 
 raw_mode(false); // disable to release the user terimal
 ```
+
+## Core functions 
