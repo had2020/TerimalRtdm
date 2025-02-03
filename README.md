@@ -69,10 +69,41 @@ cursor_state(false);
 raw_mode()
 
 - Used to enable raw input, which is required for most Terimal apps.
-- Tip: Toggle true
+- Tip: Should toggled true before app loop, and toggled false after, to free the user.
 ``` Rust
 raw_mode(true)
 ```
+
+raw_line()
+
+- displays on a new line before app loop
+- Use only for startup text, relay on line method
+``` Rust
+raw_line("q <- to quit");
+```
+
+halt_press_check()
+
+- Halts the program until the user has pressed a key
+- will not be recored into app variable.
+- So input will only be used for this if statement.
+``` Rust
+if halt_press_check(&mut app, "q") {
+    break;
+}
+```
+
+Position Struct 
+
+- Used as argument in many functions.
+- Holds x and y position in the Terimal.
+- X number of spaced words to the right
+- Y number pf spaced workds Down
+- Tip: You can use the position! macro to easly make a Position Structed
+``` Rust
+position!(0, 0)
+```
+
 
 
 ## How it works
