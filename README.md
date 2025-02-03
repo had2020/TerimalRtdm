@@ -5,7 +5,7 @@ Lightwight, Simple, Easy to read, Ideomatic Rust Terimal Interface Library for C
 [![crates.io](https://img.shields.io/crates/v/TerimalRtdm.svg)](https://crates.io/crates/TerimalRtdm/0.0.1)
 [![Downloads](https://img.shields.io/crates/d/TerimalRtdm.svg)](https://crates.io/crates/TerimalRtdm)
 
-## Why use it 
+## 👉 Why use it 
 This framework provides many usful functions that abstract ACSI escape keys,
 allowing for easy implementation for a Terimal Interface. 
 
@@ -13,10 +13,10 @@ allowing for easy implementation for a Terimal Interface.
 - You can write Terimal GUIs much faster!
 - Lots of functions allowing for more customizability, while keeping code readable and ideomatic.
 
-# Example app
+# 📝 Example app
 This is an example of using the framework,
 involving two key checks that don't halt the program twice.
-``` rust
+``` Rust
 clear(); // clear any debug logs
 let mut app = App::new(); // store the variables relating to the terimal app
 
@@ -46,7 +46,7 @@ loop {
 raw_mode(false); // disable to release the user terimal
 ```
 
-## Core functions 
+## ⭐️ Core functions 
 App Struct
 
 - Used to automatically hold variables outside the app loop.
@@ -141,26 +141,26 @@ if key_press(&app, "Q") { // checks the stored current key, if it's "q" or "Q"
 
 ## How it works
 
-## Color Map
+## 🎨 Color Map
 
-| Color    | ANSI Code    |
-|----------|-------------|
-| red      | `\x1B[31m`  |
-| green    | `\x1B[32m`  |
-| yellow   | `\x1B[33m`  |
-| blue     | `\x1B[34m`  |
-| magenta  | `\x1B[35m`  |
-| cyan     | `\x1B[36m`  |
-| white    | `\x1B[37m`  |
-| _ (default) | `\x1B[0m`  |
+| Color    | ANSI Code    | Emoji |
+|----------|-------------|-------|
+| red      | `\x1B[31m`  | 🟥    |
+| green    | `\x1B[32m`  | 🟩    |
+| yellow   | `\x1B[33m`  | 🟨    |
+| blue     | `\x1B[34m`  | 🟦    |
+| magenta  | `\x1B[35m`  | 🟪    |
+| cyan     | `\x1B[36m`  | 🟦    |  
+| white    | `\x1B[37m`  | ⬜️    |
+| _ (fallback default) | `\x1B[0m`  | ⬛️    | 
 
-## Key Map
+## ⌨️ Key Map
 
 Most are directly named, `q` is `q`, and `Q` is `Q`
 
 - Refer to `find_key_pressed()`, for more keys.
 
-## Structure 
+## 🏛️ Structure 
 
 1. clear, old text < optional `clear()`
 2. setup app struct with new() `let mut app = App::new();`
@@ -174,7 +174,7 @@ Most are directly named, `q` is `q`, and `Q` is `Q`
 10. set raw mode to false, for exiting the app `raw_mode(false);`
 
 
-## Major Usage in another project!
+## 👉 Major Usage in another project!
 for a terimal based web browser.
 
 https://github.com/had2020/RusosBr
