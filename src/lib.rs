@@ -10,27 +10,30 @@ pub fn cursor_state(enabled: bool) {
     }
 }
 
-pub struct Window {
-    x: usize,
-    z: usize,
-}
-
 pub struct App {
     pub key_buffer: [u8; 3],
     pub multi_line: Vec<Vec<String>>,
+    pub x: usize,
+    pub y: usize,
 }
 
 impl App {
-    pub fn new(window: Window) -> Self {
+    pub fn new(x: usize, y: usize) -> Self {
         let mut intial_screen: Vec<Vec<String>> = vec![];
-        for row in 0..window.x {}
+        for row in 0..x {
+            intial_screen.push(vec![]);
+            for column in 0..y {
+                //intial_screen[row].push(String::new())
+                intial_screen[row].push("X".to_string()) // Debug
+            }
+        }
+        println!("{:?}", intial_screen);
 
         App {
             key_buffer: [0; 3],
-            multi_line: vec![
-                vec![String::new(), String::new()],
-                vec![String::new(), String::new()],
-            ],
+            multi_line: intial_screen,
+            x: x,
+            y: y,
         }
     }
 }
@@ -51,13 +54,25 @@ pub fn raw_mode(enabled: bool) {
     }
 }
 
-use std::io::{self, Read, Write};
+pub struct Position {
+    pub x: usize,
+    pub y: usize,
+}
 
-pub fn line(message: &str) {
+#[macro_export]
+macro_rules! position {
+    ($x:expr, $y:expr) => {
+        Position { x: $x, y: $y }
+    };
+}
+
+pub fn raw_line(message: &str) {
     let mut stdout = io::stdout();
     stdout.write_all(format!("{message}\n").as_bytes()).unwrap();
     stdout.flush().unwrap();
 }
+
+use std::io::{self, Read, Write};
 
 pub fn key_pressed(app: &mut App, key: &str) -> bool {
     let bytes_read = io::stdin().read(&mut app.key_buffer).unwrap();
@@ -202,4 +217,20 @@ pub fn key_pressed(app: &mut App, key: &str) -> bool {
 
     app.key_buffer = [0; 3];
     pressed
+}
+
+pub fn display(app: &mut App) {
+    for row in 0..app.x {
+        for column in 0..app.y {
+            raw_line(&app.multi_line[row][column])
+        }
+    }
+}
+
+pub fn line(position: Position, text: &str) {
+    let x = position.x;
+    let y = position.y;
+    let letter = text;
+    print!("\x1B[2J\x1B[{};{}H{}", x, y, letter);
+    io::stdout().flush().unwrap();
 }
