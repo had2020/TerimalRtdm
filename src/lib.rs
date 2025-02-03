@@ -16,7 +16,7 @@ pub struct App {
 }
 
 impl App {
-    pub fn new(x: usize, y: usize) -> Self {
+    pub fn new() -> Self {
         App {
             key_buffer: [0; 3],
             keys_pressed: String::new(),

@@ -30,5 +30,11 @@ keywords = [
     "console",
     "widgets",
     "cli",
+    "event-driven",
 ]
-categories = ["gui", "rendering"]
+categories = [
+    "gui",
+    "rendering",
+    "command-line-interface",
+    "command-line-utlities",
+]
