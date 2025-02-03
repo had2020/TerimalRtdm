@@ -12,14 +12,14 @@ pub fn cursor_state(enabled: bool) {
 
 pub struct App {
     pub key_buffer: [u8; 3],
-    pub key_pressed: String,
+    pub keys_pressed: String,
 }
 
 impl App {
     pub fn new(x: usize, y: usize) -> Self {
         App {
             key_buffer: [0; 3],
-            key_pressed: String::new(),
+            keys_pressed: String::new(),
         }
     }
 }
@@ -40,6 +40,7 @@ pub fn raw_mode(enabled: bool) {
     }
 }
 
+// Usage raw_line("q <- to quit");
 pub fn raw_line(message: &str) {
     let mut stdout = io::stdout();
     stdout.write_all(format!("{message}\n").as_bytes()).unwrap();
@@ -48,13 +49,19 @@ pub fn raw_line(message: &str) {
 
 use std::io::{self, Read, Write};
 
-pub fn key_pressed(app: &mut App, key: &str) -> bool {
+/// mainly not used, holds program till key press and does not save for other if statements
+/// Usage
+//if halt_press_check(&mut app, "q") {
+///    clear();
+///    break;
+///}
+pub fn halt_press_check(app: &mut App, key: &str) -> bool {
     let pressed: bool;
 
     let pressed_key = find_key_pressed(app);
 
     if pressed_key == key {
-        // .eq_ignore_ascii_case(key)
+        // .eq_ignore_ascii_case(key) for removing case sensitivity.
         pressed = true;
     } else if pressed_key == "unknown" {
         pressed = false;
@@ -78,6 +85,7 @@ macro_rules! position {
     };
 }
 
+/// Please refer to this for color names
 pub fn color_code(color: &str) -> &'static str {
     match color {
         "red" => "\x1B[31m",
@@ -91,6 +99,11 @@ pub fn color_code(color: &str) -> &'static str {
     }
 }
 
+/// Used to make a text appear, a a position,
+/// each position being a different sectioned &str on screen.
+/// Usage
+///line(Position { x: 0, y: 5 }, "First", "blue");
+///line(Position { x: 0, y: 11 }, "Sec", "red");
 pub fn line(position: Position, text: &str, color: &str) {
     let x = position.x;
     let y = position.y;
@@ -231,15 +244,37 @@ pub fn find_key_pressed(app: &mut App) -> &'static str {
     pressed_key
 }
 
-// not used, due to key trottling issues
+/// not used, due to key trottling issues
+/// Usage
+///all_presses = format!("{}{}", all_presses, collected_key_presses(&mut app));
+///println!("{}", all_presses);
 pub fn collected_key_presses(app: &mut App) -> &'static str {
     find_key_pressed(app)
 }
 
-#[macro_export]
-macro_rules! app_loop {
-    ($app:expr, $code:expr) => {
-        find_key_pressed($app);
-        $app.key_pressed = $code;
-    };
+/// will still halt but collect one input for the whole loop, each loop being for one input
+pub fn collect_presses(app: &mut App) {
+    app.keys_pressed = find_key_pressed(app).to_string();
+}
+
+/// to use you must collect_presses(), before calling this method
+/// refer to find_key_pressed() to see all key names for key &str
+/// This is the main way to check for input.
+/// to collect full input for typing you will need to make a loop within the loop.
+/// otherwise everyother key will be missing from collect_presses() method.
+pub fn key_press(app: &App, key: &str) -> bool {
+    if app.keys_pressed == key.to_string() {
+        true
+    } else {
+        false
+    }
+}
+
+/// Same as key_press() method, but is not case sensitive.
+pub fn key_press_not_case_sen(app: &App, key: &str) -> bool {
+    if app.keys_pressed.eq_ignore_ascii_case(key) {
+        true
+    } else {
+        false
+    }
 }
