@@ -104,21 +104,35 @@ Position Struct
 position!(0, 0)
 ```
 
-collected_key_presses() 
-
-- not used, due to key trottling issues
-``` Rust
-// all_presses = format!("{}{}", all_presses, collected_key_presses(&mut app));
-/ /println!("{}", all_presses);
-```
-
 collect_presses() 
 
 - collects the current press in a single halt, and stores it in App variable.
-- Later inout statements refer to this value, to prevent unneeded halts.
+- Later inout statements refer to this value, to prevent unneeded halts, within the main loop for app.
 - Used after clear, before any input if statements.
+``` Rust
+collect_presses(&mut app);
+```
 
+key_press()
 
+- You must have one collect_presses() before at the start of the loop!
+- Returns true if &str equals the last &str of input.
+``` Rust
+if key_press(&app, "q") { // checks the stored current key, if it's "q"
+    clear(); // clear the sceen
+    break; // exits the terimal app
+}
+```
+
+key_press_not_case_sen()
+
+- Refer to key_press(), for usage.
+- Its the same, just not case sensitive.
+``` Rust
+if key_press(&app, "Q") { // checks the stored current key, if it's "q" or "Q"
+    break; // exits the terimal app
+}
+```
 
 
 ## How it works
