@@ -104,8 +104,31 @@ Position Struct
 position!(0, 0)
 ```
 
+collected_key_presses() 
+
+- not used, due to key trottling issues
+``` Rust
+// all_presses = format!("{}{}", all_presses, collected_key_presses(&mut app));
+/ /println!("{}", all_presses);
+```
+
+collect_presses() 
+
+
 
 
 ## How it works
 
-## Key and Color names map
+## Color Map
+
+| Color    | ANSI Code    |
+|----------|-------------|
+| red      | `\x1B[31m`  |
+| green    | `\x1B[32m`  |
+| yellow   | `\x1B[33m`  |
+| blue     | `\x1B[34m`  |
+| magenta  | `\x1B[35m`  |
+| cyan     | `\x1B[36m`  |
+| white    | `\x1B[37m`  |
+| _ (default) | `\x1B[0m`  |
+
