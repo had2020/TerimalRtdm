@@ -3,7 +3,7 @@ Lightwight, Simple, Easy to read, Ideomatic Rust Terimal Interface Library for C
 
 ![MSRV](https://img.shields.io/badge/Rust%20MSRV-1.78.0-brightgreen)
 [![crates.io](https://img.shields.io/crates/v/TerimalRtdm.svg)](https://crates.io/crates/TerimalRtdm/0.0.1)
-[![Downloads](https://img.shields.io/crates/d/laststraw.svg)](https://crates.io/crates/laststraw)
+[![Downloads](https://img.shields.io/crates/d/TerimalRtdm.svg)](https://crates.io/crates/TerimalRtdm)
 
 ## Why use it 
 This framework provides many usful functions that abstract ACSI escape keys,
