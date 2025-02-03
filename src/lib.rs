@@ -12,29 +12,11 @@ pub fn cursor_state(enabled: bool) {
 
 pub struct App {
     pub key_buffer: [u8; 3],
-    pub multi_line: Vec<Vec<String>>,
-    pub x: usize,
-    pub y: usize,
 }
 
 impl App {
     pub fn new(x: usize, y: usize) -> Self {
-        let mut intial_screen: Vec<Vec<String>> = vec![];
-        for row in 0..x {
-            intial_screen.push(vec![]);
-            for column in 0..y {
-                //intial_screen[row].push(String::new())
-                intial_screen[row].push("X".to_string()) // Debug
-            }
-        }
-        println!("{:?}", intial_screen);
-
-        App {
-            key_buffer: [0; 3],
-            multi_line: intial_screen,
-            x: x,
-            y: y,
-        }
+        App { key_buffer: [0; 3] }
     }
 }
 
@@ -52,18 +34,6 @@ pub fn raw_mode(enabled: bool) {
             .status()
             .unwrap();
     }
-}
-
-pub struct Position {
-    pub x: usize,
-    pub y: usize,
-}
-
-#[macro_export]
-macro_rules! position {
-    ($x:expr, $y:expr) => {
-        Position { x: $x, y: $y }
-    };
 }
 
 pub fn raw_line(message: &str) {
@@ -219,12 +189,16 @@ pub fn key_pressed(app: &mut App, key: &str) -> bool {
     pressed
 }
 
-pub fn display(app: &mut App) {
-    for row in 0..app.x {
-        for column in 0..app.y {
-            raw_line(&app.multi_line[row][column])
-        }
-    }
+pub struct Position {
+    pub x: usize,
+    pub y: usize,
+}
+
+#[macro_export]
+macro_rules! position {
+    ($x:expr, $y:expr) => {
+        Position { x: $x, y: $y }
+    };
 }
 
 pub fn line(position: Position, text: &str) {
