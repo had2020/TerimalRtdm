@@ -227,8 +227,7 @@ pub fn find_key_pressed(app: &mut App) -> &'static str {
     pressed_key
 }
 
-/*
-pub fn collected_key_presses() -> &'static str {
-    key_pressed
+pub fn collected_key_presses(app: &mut App) -> &'static str {
+    // TODO keys checked outside function to prevent hold or option to
+    find_key_pressed(app)
 }
-*/
