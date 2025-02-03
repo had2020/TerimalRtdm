@@ -9,9 +9,9 @@ Lightwight, Simple, Easy to read, Ideomatic Rust Terimal Interface Library for C
 This framework provides many usful functions that abstract ACSI escape keys,
 allowing for easy implementation for a Terimal Interface. 
 
-- Many features like key_press(), allows you to check a key without halting for a check.
-- You can write Terimal GUIs much faster!
-- Lots of functions allowing for more customizability, while keeping code readable and ideomatic.
+- 🔢 Many features like key_press(), allows you to check a key without halting for a check.
+- ⏱️ You can write Terimal GUIs much faster!
+- 🖼️ Lots of functions allowing for more customizability, while keeping code readable and ideomatic.
 
 # 📝 Example app
 This is an example of using the framework,
