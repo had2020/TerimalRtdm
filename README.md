@@ -154,6 +154,19 @@ if key_press(&app, "Q") { // checks the stored current key, if it's "q" or "Q"
 | white    | `\x1B[37m`  |
 | _ (default) | `\x1B[0m`  |
 
+## Structure 
+
+1. clear, old text < optional 'clear()'
+2. setup app struct with new() 'let mut app = App::new();'
+3. Tip: this is a good place for raw lines to display exits or shortcut keys
+4. set raw mode to true, with raw_mode() 'raw_mode(true);' 
+5. loop {} - loops for each new input 
+6. Inside clear, for old text < optional 'clear()'
+7. collect_presses(), to store the current key pressed in app 'collect_presses(&mut app);'
+8. any if statements, like key_press() and code process 'if key_press(&app, "w")'
+9. Outside the loop
+10. set raw mode to false, for exiting the app 'raw_mode(false);'
+
 
 ## I used it in another project
 for a terimal based web browser.
