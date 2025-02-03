@@ -201,10 +201,25 @@ macro_rules! position {
     };
 }
 
-pub fn line(position: Position, text: &str) {
+pub fn color_code(color: &str) -> &'static str {
+    match color {
+        "red" => "\x1B[31m",
+        "green" => "\x1B[32m",
+        "yellow" => "\x1B[33m",
+        "blue" => "\x1B[34m",
+        "magenta" => "\x1B[35m",
+        "cyan" => "\x1B[36m",
+        "white" => "\x1B[37m",
+        _ => "\x1B[0m", // incorrect name
+    }
+}
+
+pub fn line(position: Position, text: &str, color: &str) {
     let x = position.x;
     let y = position.y;
     let letter = text;
-    print!("\x1B[2J\x1B[{};{}H{}", x, y, letter);
+    let color_code = color_code(color);
+    let reset_code = "\x1B[0m";
+    print!("\x1B[{};{}H{}{}{}", x, y, color_code, letter, reset_code);
     io::stdout().flush().unwrap();
 }
