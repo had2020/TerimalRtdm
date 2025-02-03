@@ -2,7 +2,8 @@
 Ideomatic Rust Terimal Interface Library for CUIs
 
 # Example app
-This is an example of using the framework
+This is an example of using the framework,
+involving two key checks that don't halt the program twice.
 ``` rust
 clear(); // clear any debug logs
 let mut app = App::new(); // store the variables relating to the terimal app
