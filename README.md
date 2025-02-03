@@ -1,5 +1,5 @@
 ## TerimalRtdm
-Ideomatic Rust Terimal Interface Library for CUIs
+Lightwight, Simple, Easy to read, Ideomatic Rust Terimal Interface Library for CUIs
 
 ## Why use it 
 This framework provides many usful functions that abstract ACSI escape keys,
