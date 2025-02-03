@@ -244,14 +244,6 @@ pub fn find_key_pressed(app: &mut App) -> &'static str {
     pressed_key
 }
 
-/// not used, due to key trottling issues
-/// Usage
-///all_presses = format!("{}{}", all_presses, collected_key_presses(&mut app));
-///println!("{}", all_presses);
-pub fn collected_key_presses(app: &mut App) -> &'static str {
-    find_key_pressed(app)
-}
-
 /// will still halt but collect one input for the whole loop, each loop being for one input
 pub fn collect_presses(app: &mut App) {
     app.keys_pressed = find_key_pressed(app).to_string();
