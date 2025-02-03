@@ -18,20 +18,7 @@ authors = ["Hadrian Lazic"]
 description = "Lightwight, Simple, Easy to read, Ideomatic Rust Terimal Interface Library for CUIs"
 license = "MIT"
 repository = "https://github.com/had2020/TerimalRtdm"
-keywords = [
-    "cui",
-    "framework",
-    "rust",
-    "tui",
-    "terminal",
-    "interactive",
-    "text-based",
-    "ansi",
-    "console",
-    "widgets",
-    "cli",
-    "event-driven",
-]
+keywords = ["cui", "tui", "terminal", "console", "cli"]
 categories = [
     "gui",
     "rendering",
