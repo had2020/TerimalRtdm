@@ -154,6 +154,12 @@ if key_press(&app, "Q") { // checks the stored current key, if it's "q" or "Q"
 | white    | `\x1B[37m`  |
 | _ (default) | `\x1B[0m`  |
 
+## Key Map
+
+Most are directly named, `q` is `q`, and `Q` is `Q`
+
+- Refer to `find_key_pressed()`, for more keys.
+
 ## Structure 
 
 1. clear, old text < optional `clear()`
