@@ -1,6 +1,10 @@
 ## TerimalRtdm
 Lightwight, Simple, Easy to read, Ideomatic Rust Terimal Interface Library for CUIs
 
+![MSRV](https://img.shields.io/badge/Rust%20MSRV-1.78.0-brightgreen)
+[![crates.io](https://img.shields.io/crates/v/TerimalRtdm.svg)](https://crates.io/crates/TerimalRtdm/0.0.1)
+[![Downloads](https://img.shields.io/crates/d/laststraw.svg)](https://crates.io/crates/laststraw)
+
 ## Why use it 
 This framework provides many usful functions that abstract ACSI escape keys,
 allowing for easy implementation for a Terimal Interface. 
@@ -149,4 +153,11 @@ if key_press(&app, "Q") { // checks the stored current key, if it's "q" or "Q"
 | cyan     | `\x1B[36m`  |
 | white    | `\x1B[37m`  |
 | _ (default) | `\x1B[0m`  |
+
+
+## I used it in another project
+for a terimal based web browser.
+
+https://github.com/had2020/RusosBr
+
 
