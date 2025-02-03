@@ -10,13 +10,28 @@ pub fn cursor_state(enabled: bool) {
     }
 }
 
+pub struct Window {
+    x: usize,
+    z: usize,
+}
+
 pub struct App {
-    pub buffer: [u8; 3],
+    pub key_buffer: [u8; 3],
+    pub multi_line: Vec<Vec<String>>,
 }
 
 impl App {
-    pub fn new() -> Self {
-        App { buffer: [0; 3] }
+    pub fn new(window: Window) -> Self {
+        let mut intial_screen: Vec<Vec<String>> = vec![];
+        for row in 0..window.x {}
+
+        App {
+            key_buffer: [0; 3],
+            multi_line: vec![
+                vec![String::new(), String::new()],
+                vec![String::new(), String::new()],
+            ],
+        }
     }
 }
 
@@ -45,10 +60,10 @@ pub fn line(message: &str) {
 }
 
 pub fn key_pressed(app: &mut App, key: &str) -> bool {
-    let bytes_read = io::stdin().read(&mut app.buffer).unwrap();
+    let bytes_read = io::stdin().read(&mut app.key_buffer).unwrap();
     let pressed: bool;
 
-    let pressed_key = match &app.buffer[..bytes_read] {
+    let pressed_key = match &app.key_buffer[..bytes_read] {
         // escape sequences
         [27, 91, 27] => "Esc",
 
@@ -177,15 +192,14 @@ pub fn key_pressed(app: &mut App, key: &str) -> bool {
     if pressed_key == key {
         // .eq_ignore_ascii_case(key)
         pressed = true;
-        println!()
     } else if pressed_key == "unknown" {
-        println!("Other key: {:?}", &app.buffer[..bytes_read]); // add key if missing
+        //println!("Other key: {:?}", &app.buffer[..bytes_read]); // add key if missing
         pressed = false;
     } else {
         pressed = false;
-        println!("Not correct key") // used to check if key is added
+        //println!("Not correct key") // used to check if key is added
     }
 
-    app.buffer = [0; 3];
+    app.key_buffer = [0; 3];
     pressed
 }
