@@ -23,5 +23,5 @@ categories = [
     "gui",
     "rendering",
     "command-line-interface",
-    "command-line-utlities",
+    "command-line-utilities",
 ]
