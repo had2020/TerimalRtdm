@@ -2,7 +2,7 @@
 Lightwight, Simple, Easy to read, Ideomatic Rust Terimal Interface Library for CUIs
 
 ![MSRV](https://img.shields.io/badge/Rust%20MSRV-1.78.0-brightgreen)
-[![crates.io](https://img.shields.io/crates/v/TerimalRtdm.svg)](https://crates.io/crates/TerimalRtdm/0.0.1)
+[![crates.io](https://img.shields.io/crates/v/TerimalRtdm.svg)](https://crates.io/crates/TerimalRtdm/0.0.2)
 [![Downloads](https://img.shields.io/crates/d/TerimalRtdm.svg)](https://crates.io/crates/TerimalRtdm)
 
 ## ⭐️ Show support by leaving a star. Check out Github for up to date docs
