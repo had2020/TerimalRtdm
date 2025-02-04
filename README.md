@@ -5,6 +5,9 @@ Lightwight, Simple, Easy to read, Ideomatic Rust Terimal Interface Library for C
 [![crates.io](https://img.shields.io/crates/v/TerimalRtdm.svg)](https://crates.io/crates/TerimalRtdm/0.0.1)
 [![Downloads](https://img.shields.io/crates/d/TerimalRtdm.svg)](https://crates.io/crates/TerimalRtdm)
 
+## ⭐️ Show support by leaving a star. Check out Github for up to date docs
+https://github.com/had2020/TerimalRtdm 
+
 ## 👉 Why use it 
 This framework provides many usful functions that abstract ACSI escape keys,
 allowing for easy implementation for a Terimal Interface. 
@@ -46,7 +49,7 @@ loop {
 raw_mode(false); // disable to release the user terimal
 ```
 
-## ⭐️ Core functions 
+## 🧮 Core functions 
 App Struct
 
 - Used to automatically hold variables outside the app loop.
