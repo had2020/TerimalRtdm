@@ -204,6 +204,7 @@ pub fn find_key_pressed(app: &mut App) -> &'static str {
         [32] => "Space",
         [9] => "Tab",
         [10] => "Enter",
+        [13] => "Enter",
         [127] => "Backspace",
         [33] => "!",
         [34] => "\"",
