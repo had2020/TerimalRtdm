@@ -271,3 +271,8 @@ pub fn key_press_not_case_sen(app: &App, key: &str) -> bool {
         false
     }
 }
+
+/// Move to cursor to a position
+pub fn move_cursor(position: Position) {
+    println!("\033[{};{}H", position.x, position.y);
+}
