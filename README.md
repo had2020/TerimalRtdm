@@ -177,8 +177,11 @@ Most are directly named, `q` is `q`, and `Q` is `Q`
 10. set raw mode to false, for exiting the app `raw_mode(false);`
 
 
-## 👉 Major Usage in another project!
-for a terimal based web browser.
+## 👉 Major Usage in another projects!
 
+- For a Nano like text editer
+https://github.com/had2020/Runo
+
+- For a terimal based web browser.
 https://github.com/had2020/RusosBr
 
