@@ -148,22 +148,12 @@ pub fn find_key_pressed(app: &mut App) -> &'static str {
         }
     }
 
-    println!("Final key_buf: {:?}", &key_buf[..total_read]);
+    //println!("Final key_buf: {:?}", &key_buf[..total_read]); // Debug
+    //let bytes_read = io::stdin().read(&mut app.key_buffer).unwrap(); // deprecated first byte only.
 
-    /*
-    let mut total_read = 0;
-
-    while total_read < 3 {
-        let read_now: usize = io::stdin().read(&mut app.key_buffer[total_read..]).unwrap();
-        total_read += read_now;
-        println!("{:?}", app.key_buffer);
-    }
-
-    //let bytes_read = io::stdin().read(&mut app.key_buffer).unwrap();
-
-    let pressed_key: &str = match &app.key_buffer[..total_read] {
+    let pressed_key: &str = match &key_buf[..total_read] {
         // escape sequences
-        [27, 91, 27] => "Esc",
+        [27, 27, 27] => "Esc", // Note: you have to press esc threee times, due to design.
 
         // function keys
         [27, 79, 80] => "F1",
@@ -288,8 +278,6 @@ pub fn find_key_pressed(app: &mut App) -> &'static str {
         _ => "unknown",
     };
     pressed_key
-    */
-    "q"
 }
 
 /// will still halt but collect one input for the whole loop, each loop being for one input
