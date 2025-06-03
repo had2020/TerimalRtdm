@@ -1,3 +1,7 @@
+use std::io::{self, Read, Write};
+use std::thread::sleep;
+use std::time::{Duration, Instant};
+
 pub fn clear() {
     print!("\x1B[2J\x1B[1;1H");
 }
@@ -46,8 +50,6 @@ pub fn raw_line(message: &str) {
     stdout.write_all(format!("{message}\n").as_bytes()).unwrap();
     stdout.flush().unwrap();
 }
-
-use std::io::{self, Read, Write};
 
 /// mainly not used, holds program till key press and does not save for other if statements
 /// Usage
@@ -114,9 +116,52 @@ pub fn line(position: Position, text: &str, color: &str) {
     io::stdout().flush().unwrap();
 }
 
+/// Returns the code of a extra key that is pressed.
+/// The app loop will take on input for the cycle, and then
+/// another being one linearly.
+/// So you will need to press the same key twice and then it will return, enabling the process to continue.
+/// Use this function to debug for keys not included in the find_key_pressed method.
+pub fn debug_code_pressed(app: &mut App) -> u8 {
+    io::stdin().read(&mut app.key_buffer).unwrap();
+    app.key_buffer[0]
+}
+
 pub fn find_key_pressed(app: &mut App) -> &'static str {
-    let bytes_read = io::stdin().read(&mut app.key_buffer).unwrap();
-    let pressed_key: &str = match &app.key_buffer[..bytes_read] {
+    let mut key_buf = [0u8; 3];
+    let mut total_read = 0;
+    let stdin = io::stdin();
+
+    let read_now = stdin.lock().read(&mut key_buf[total_read..]).unwrap();
+    total_read += read_now;
+
+    if key_buf[..total_read] == [27] {
+        for _ in 0..2 {
+            sleep(Duration::from_millis(30));
+            if let Ok(n) = stdin.lock().read(&mut key_buf[total_read..]) {
+                if n == 0 {
+                    break;
+                }
+                total_read += n;
+            } else {
+                break;
+            }
+        }
+    }
+
+    println!("Final key_buf: {:?}", &key_buf[..total_read]);
+
+    /*
+    let mut total_read = 0;
+
+    while total_read < 3 {
+        let read_now: usize = io::stdin().read(&mut app.key_buffer[total_read..]).unwrap();
+        total_read += read_now;
+        println!("{:?}", app.key_buffer);
+    }
+
+    //let bytes_read = io::stdin().read(&mut app.key_buffer).unwrap();
+
+    let pressed_key: &str = match &app.key_buffer[..total_read] {
         // escape sequences
         [27, 91, 27] => "Esc",
 
@@ -243,6 +288,8 @@ pub fn find_key_pressed(app: &mut App) -> &'static str {
         _ => "unknown",
     };
     pressed_key
+    */
+    "q"
 }
 
 /// will still halt but collect one input for the whole loop, each loop being for one input
