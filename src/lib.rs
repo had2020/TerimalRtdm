@@ -1,6 +1,6 @@
 use std::io::{self, Read, Write};
 use std::thread::sleep;
-use std::time::{Duration, Instant};
+use std::time::Duration;
 
 pub fn clear() {
     print!("\x1B[2J\x1B[1;1H");
@@ -122,22 +122,23 @@ pub fn line(position: Position, text: &str, color: &str) {
 /// So you will need to press the same key twice and then it will return, enabling the process to continue.
 /// Use this function to debug for keys not included in the find_key_pressed method.
 pub fn debug_code_pressed(app: &mut App) -> u8 {
+    //TODO update
     io::stdin().read(&mut app.key_buffer).unwrap();
     app.key_buffer[0]
 }
 
 pub fn find_key_pressed(app: &mut App) -> &'static str {
-    let mut key_buf = [0u8; 3];
+    let mut key_buffer = [0u8; 3];
     let mut total_read = 0;
     let stdin = io::stdin();
 
-    let read_now = stdin.lock().read(&mut key_buf[total_read..]).unwrap();
+    let read_now = stdin.lock().read(&mut key_buffer[total_read..]).unwrap();
     total_read += read_now;
 
-    if key_buf[..total_read] == [27] {
+    if key_buffer[..total_read] == [27] {
         for _ in 0..2 {
             sleep(Duration::from_millis(30));
-            if let Ok(n) = stdin.lock().read(&mut key_buf[total_read..]) {
+            if let Ok(n) = stdin.lock().read(&mut key_buffer[total_read..]) {
                 if n == 0 {
                     break;
                 }
@@ -148,10 +149,10 @@ pub fn find_key_pressed(app: &mut App) -> &'static str {
         }
     }
 
-    //println!("Final key_buf: {:?}", &key_buf[..total_read]); // Debug
+    //println!("Final key_buffer: {:?}", &key_buffer[..total_read]); // Debug
     //let bytes_read = io::stdin().read(&mut app.key_buffer).unwrap(); // deprecated first byte only.
 
-    let pressed_key: &str = match &key_buf[..total_read] {
+    let pressed_key: &str = match &key_buffer[..total_read] {
         // escape sequences
         [27, 27, 27] => "Esc", // Note: you have to press esc threee times, due to design.
 
