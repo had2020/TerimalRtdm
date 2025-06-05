@@ -12,7 +12,7 @@ path = "src/lib.rs"
 
 [package]
 name = "TerimalRtdm"
-version = "0.0.2"
+version = "0.0.3"
 edition = "2021"
 authors = ["Hadrian Lazic"]
 description = "Lightwight, Simple, Easy to read, Ideomatic Rust Terimal Interface Library for CUIs"
