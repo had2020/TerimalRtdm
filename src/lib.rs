@@ -17,6 +17,8 @@ pub fn cursor_state(enabled: bool) {
 pub struct App {
     pub key_buffer: [u8; 3],
     pub keys_pressed: String,
+    pub enable_f_row_and_arrow: bool,
+    pub unknown_not_asci_code: bool,
 }
 
 impl App {
@@ -24,6 +26,8 @@ impl App {
         App {
             key_buffer: [0; 3],
             keys_pressed: String::new(),
+            enable_f_row_and_arrow: false, //TODO demo case in docs
+            unknown_not_asci_code: false,  //TODO
         }
     }
 }
@@ -122,12 +126,11 @@ pub fn line(position: Position, text: &str, color: &str) {
 /// So you will need to press the same key twice and then it will return, enabling the process to continue.
 /// Use this function to debug for keys not included in the find_key_pressed method.
 pub fn debug_code_pressed(app: &mut App) -> u8 {
-    //TODO update
     io::stdin().read(&mut app.key_buffer).unwrap();
     app.key_buffer[0]
 }
 
-pub fn find_key_pressed(app: &mut App) -> &'static str {
+pub fn find_key_pressed_f_row_and_arrow(app: &mut App) -> &'static str {
     let mut key_buffer = [0u8; 3];
     let mut total_read = 0;
     let stdin = io::stdin();
@@ -161,6 +164,14 @@ pub fn find_key_pressed(app: &mut App) -> &'static str {
         [27, 79, 81] => "F2",
         [27, 79, 82] => "F3",
         [27, 79, 83] => "F4",
+        [27, 91, 49, 53, 126] => "F5",
+        [27, 91, 49, 55, 126] => "F6",
+        [27, 91, 49, 56, 126] => "F7",
+        [27, 91, 49, 57, 126] => "F8",
+        [27, 91, 50, 48, 126] => "F9",
+        [27, 91, 50, 49, 126] => "F10",
+        [27, 91, 50, 51, 126] => "F11",
+        [27, 91, 50, 52, 126] => "F12",
 
         // arrow keys
         [27, 91, 65] => "Up",
@@ -171,7 +182,128 @@ pub fn find_key_pressed(app: &mut App) -> &'static str {
         // lowercase letter keys
         [97] => "a",
         [98] => "b",
-        [99] => "C",
+        [99] => "c",
+        [100] => "d",
+        [101] => "e",
+        [102] => "f",
+        [103] => "g",
+        [104] => "h",
+        [105] => "i",
+        [106] => "j",
+        [107] => "k",
+        [108] => "l",
+        [109] => "m",
+        [110] => "n",
+        [111] => "o",
+        [112] => "p",
+        [113] => "q",
+        [114] => "r",
+        [115] => "s",
+        [116] => "t",
+        [117] => "u",
+        [118] => "v",
+        [119] => "w",
+        [120] => "x",
+        [121] => "y",
+        [122] => "z",
+
+        // uppercase letter keys
+        [65] => "A",
+        [66] => "B",
+        [67] => "C",
+        [68] => "D",
+        [69] => "E",
+        [70] => "F",
+        [71] => "G",
+        [72] => "H",
+        [73] => "I",
+        [74] => "J",
+        [75] => "K",
+        [76] => "L",
+        [77] => "M",
+        [78] => "N",
+        [79] => "O",
+        [80] => "P",
+        [81] => "Q",
+        [82] => "R",
+        [83] => "S",
+        [84] => "T",
+        [85] => "U",
+        [86] => "V",
+        [87] => "W",
+        [88] => "X",
+        [89] => "Y",
+        [90] => "Z",
+
+        // numbers
+        [48] => "0",
+        [49] => "1",
+        [50] => "2",
+        [51] => "3",
+        [52] => "4",
+        [53] => "5",
+        [54] => "6",
+        [55] => "7",
+        [56] => "8",
+        [57] => "9",
+
+        // special characters
+        [32] => "Space",
+        [9] => "Tab",
+        [10] => "Enter",
+        [13] => "Enter",
+        [127] => "Backspace",
+        [33] => "!",
+        [34] => "\"",
+        [35] => "#",
+        [36] => "$",
+        [37] => "%",
+        [38] => "&",
+        [39] => "'",
+        [40] => "(",
+        [41] => ")",
+        [42] => "*",
+        [43] => "+",
+        [44] => ",",
+        [45] => "-",
+        [46] => ".",
+        [47] => "/",
+        [58] => ":",
+        [59] => ";",
+        [60] => "<",
+        [61] => "=",
+        [62] => ">",
+        [63] => "?",
+        [64] => "@",
+        [91] => "[",
+        [92] => "\\",
+        [93] => "]",
+        [94] => "^",
+        [95] => "_",
+        [96] => "`",
+        [123] => "{",
+        [124] => "|",
+        [125] => "}",
+        [126] => "~",
+
+        // fail case
+        _ => "unknown",
+    };
+    pressed_key
+}
+
+pub fn find_key_pressed_no_special(app: &mut App) -> &'static str {
+    let key_buffer = [0u8; 3];
+    let bytes_read = io::stdin().read(&mut app.key_buffer).unwrap(); // deprecated first byte only.
+
+    let pressed_key: &str = match &key_buffer[..bytes_read] {
+        // escape sequences
+        [27, 27, 27] => "Esc", // Note: you have to press esc threee times, due to design.
+
+        // lowercase letter keys
+        [97] => "a",
+        [98] => "b",
+        [99] => "c",
         [100] => "d",
         [101] => "e",
         [102] => "f",
