@@ -298,7 +298,7 @@ pub fn find_key_pressed_no_special(app: &mut App) -> &'static str {
 
     let pressed_key: &str = match &key_buffer[..bytes_read] {
         // escape sequences
-        [27, 27, 27] => "Esc", // Note: you have to press esc threee times, due to design.
+        [27] => "Esc",
 
         // lowercase letter keys
         [97] => "a",
@@ -414,8 +414,13 @@ pub fn find_key_pressed_no_special(app: &mut App) -> &'static str {
 }
 
 /// will still halt but collect one input for the whole loop, each loop being for one input
+/// Set app.enable_f_row_and_arrow = true, if you wish for all function keys.
 pub fn collect_presses(app: &mut App) {
-    app.keys_pressed = find_key_pressed(app).to_string();
+    if app.enable_f_row_and_arrow == true {
+        app.keys_pressed = find_key_pressed_f_row_and_arrow(app).to_string();
+    } else {
+        app.keys_pressed = find_key_pressed_no_special(app).to_string();
+    }
 }
 
 /// to use you must collect_presses(), before calling this method
