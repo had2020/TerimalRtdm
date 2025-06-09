@@ -63,11 +63,15 @@ pub fn raw_line(message: &str) {
 ///}
 pub fn halt_press_check(app: &mut App, key: &str) -> bool {
     let pressed: bool;
+    let pressed_key: String;
 
-    let pressed_key = find_key_pressed(app);
+    if app.enable_f_row_and_arrow == true {
+        pressed_key = find_key_pressed_f_row_and_arrow(app).to_string();
+    } else {
+        pressed_key = find_key_pressed_no_special(app).to_string();
+    }
 
     if pressed_key == key {
-        // .eq_ignore_ascii_case(key) for removing case sensitivity.
         pressed = true;
     } else if pressed_key == "unknown" {
         pressed = false;
@@ -153,7 +157,6 @@ pub fn find_key_pressed_f_row_and_arrow(app: &mut App) -> &'static str {
     }
 
     //println!("Final key_buffer: {:?}", &key_buffer[..total_read]); // Debug
-    //let bytes_read = io::stdin().read(&mut app.key_buffer).unwrap(); // deprecated first byte only.
 
     let pressed_key: &str = match &key_buffer[..total_read] {
         // escape sequences
@@ -293,10 +296,9 @@ pub fn find_key_pressed_f_row_and_arrow(app: &mut App) -> &'static str {
 }
 
 pub fn find_key_pressed_no_special(app: &mut App) -> &'static str {
-    let key_buffer = [0u8; 3];
-    let bytes_read = io::stdin().read(&mut app.key_buffer).unwrap(); // deprecated first byte only.
+    let bytes_read = io::stdin().read(&mut app.key_buffer).unwrap();
 
-    let pressed_key: &str = match &key_buffer[..bytes_read] {
+    let pressed_key: &str = match &app.key_buffer[..bytes_read] {
         // escape sequences
         [27] => "Esc",
 
