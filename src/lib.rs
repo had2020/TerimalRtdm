@@ -109,21 +109,6 @@ pub fn color_code(color: &str) -> &'static str {
     }
 }
 
-/// Used to make a text appear, a a position,
-/// each position being a different sectioned &str on screen.
-/// Usage
-///line(Position { x: 0, y: 5 }, "First", "blue");
-///line(Position { x: 0, y: 11 }, "Sec", "red");
-pub fn line(position: Position, text: &str, color: &str) {
-    let x = position.x;
-    let y = position.y;
-    let letter = text;
-    let color_code = color_code(color);
-    let reset_code = "\x1B[0m";
-    print!("\x1B[{};{}H{}{}{}", x, y, color_code, letter, reset_code);
-    io::stdout().flush().unwrap();
-}
-
 /// Returns the code of a extra key that is pressed.
 /// The app loop will take on input for the cycle, and then
 /// another being one linearly.
@@ -450,4 +435,59 @@ pub fn key_press_not_case_sen(app: &App, key: &str) -> bool {
 /// Move to cursor to a position
 pub fn move_cursor(position: Position) {
     println!("\033[{};{}H", position.x, position.y);
+}
+
+pub struct LineSettings {
+    pub font_color: &'static str,
+    pub background_color: &'static str,
+    pub font_custom_color: i8,
+    pub background_custom_color: i8,
+}
+pub struct Text {
+    pub settings: LineSettings,
+}
+impl Default for LineSettings {
+    fn default() -> Self {
+        Self {
+            font_color: "White",
+            background_color: "White",
+            font_custom_color: -1,
+            background_custom_color: -1,
+        }
+    }
+}
+impl Text {
+    pub fn set() -> Self {
+        Text {
+            settings: LineSettings::default(),
+        }
+    }
+
+    pub fn font_color(mut self, name: &'static str) {
+        self.settings.font_color = name;
+    }
+}
+
+/// DEPRECATED! Use Text struct with set impl
+/// Used to make a text appear, a a position,
+/// each position being a different sectioned &str on screen.
+/// Usage
+///line(Position { x: 0, y: 5 }, "First", "blue");
+///line(Position { x: 0, y: 11 }, "Sec", "red");
+pub fn line(position: Position, text: &str, color: &str) {
+    let x = position.x;
+    let y = position.y;
+    let letter = text;
+    let color_code = color_code(color);
+    let reset_code = "\x1B[0m";
+    print!("\x1B[{};{}H{}{}{}", x, y, color_code, letter, reset_code);
+    io::stdout().flush().unwrap();
+}
+
+pub fn enable_line_wrapping(enable: bool) {
+    if enable {
+        println!("\x1b[?7h");
+    } else {
+        println!("\x1b[?7l");
+    }
 }
