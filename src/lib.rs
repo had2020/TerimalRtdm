@@ -95,7 +95,7 @@ macro_rules! position {
     };
 }
 
-/// Please refer to this for color names
+/// DEPRECATED! use enum "color", this will still work for the old "line" method
 pub fn color_code(color: &str) -> &'static str {
     match color {
         "red" => "\x1B[31m",
@@ -437,34 +437,50 @@ pub fn move_cursor(position: Position) {
     println!("\033[{};{}H", position.x, position.y);
 }
 
-pub struct LineSettings {
-    pub font_color: &'static str,
-    pub background_color: &'static str,
-    pub font_custom_color: i8,
-    pub background_custom_color: i8,
-}
 pub struct Text {
-    pub settings: LineSettings,
+    pub settings: TextColorOption,
 }
-impl Default for LineSettings {
+
+/// "fore" corresponds to foreground, and "back" to background accordingly.
+pub struct TextColorOption {
+    pub fore: Color,
+    pub back: Color,
+}
+
+pub enum Color {
+    Red,
+    Green,
+    Blue,
+    Yellow,
+    Magenta,
+    Cyan,
+    White,
+    Default { back: bool },
+    Custom { id: i8 },
+}
+
+impl Default for TextColorOption {
     fn default() -> Self {
         Self {
-            font_color: "White",
-            background_color: "White",
-            font_custom_color: -1,
-            background_custom_color: -1,
+            fore: Color::White,
+            back: Color::Default { back: true },
         }
     }
 }
+
 impl Text {
     pub fn set() -> Self {
         Text {
-            settings: LineSettings::default(),
+            settings: TextColorOption::default(),
         }
     }
 
-    pub fn font_color(mut self, name: &'static str) {
-        self.settings.font_color = name;
+    pub fn font_color(mut self, color: Color) {
+        self.settings.fore = color;
+    }
+
+    pub fn background_color(mut self, color: Color) {
+        self.settings.back = color;
     }
 }
 
