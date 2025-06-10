@@ -83,11 +83,22 @@ pub fn halt_press_check(app: &mut App, key: &str) -> bool {
     pressed
 }
 
+/// DEPRECATED! use Pos
+#[deprecated(note = "Use `Pos` instead. This will be removed in version 0.0.5.")]
 pub struct Position {
     pub x: usize,
     pub y: usize,
 }
 
+/// For idiomatically storing postion vector
+#[derive(Debug, Clone, Copy)]
+pub struct Pos {
+    pub x: usize,
+    pub y: usize,
+}
+
+/// DEPRECATED! use Pos Marco
+#[deprecated(note = "Use `pos!()` instead. This will be removed in version 0.0.5.")]
 #[macro_export]
 macro_rules! position {
     ($x:expr, $y:expr) => {
@@ -95,7 +106,15 @@ macro_rules! position {
     };
 }
 
+#[macro_export]
+macro_rules! pos {
+    ($x:expr, $y:expr) => {
+        Pos { x: $x, y: $y }
+    };
+}
+
 /// DEPRECATED! use enum "color", this will still work for the old "line" method
+#[deprecated(note = "Use `color` instead. This will be removed in version 0.0.5.")]
 pub fn color_code(color: &str) -> &'static str {
     match color {
         "red" => "\x1B[31m",
@@ -447,6 +466,10 @@ pub struct TextColorOption {
     pub back: Color,
 }
 
+///Custom goes from 0-255:
+/// 0-15 is standard bright colors;
+/// 16-231 is custom colors from 6 levels of reds, greens, and blues;
+/// 232-255 is a grayscale ramp, having 24 shades of gray from dark to light.
 pub enum Color {
     Red,
     Green,
@@ -468,19 +491,97 @@ impl Default for TextColorOption {
     }
 }
 
+pub fn color_to_ansi_code(color: &Color, is_bg: bool) -> i8 {
+    match color {
+        Color::Red => {
+            if is_bg {
+                41
+            } else {
+                31
+            }
+        }
+        Color::Green => {
+            if is_bg {
+                42
+            } else {
+                32
+            }
+        }
+        Color::Blue => {
+            if is_bg {
+                44
+            } else {
+                34
+            }
+        }
+        Color::Yellow => {
+            if is_bg {
+                43
+            } else {
+                33
+            }
+        }
+        Color::Magenta => {
+            if is_bg {
+                45
+            } else {
+                35
+            }
+        }
+        Color::Cyan => {
+            if is_bg {
+                46
+            } else {
+                36
+            }
+        }
+        Color::White => {
+            if is_bg {
+                47
+            } else {
+                37
+            }
+        }
+        Color::Default { .. } => {
+            if is_bg {
+                49
+            } else {
+                39
+            }
+        }
+        Color::Custom { id } => *id,
+    }
+}
+
 impl Text {
-    pub fn set() -> Self {
+    pub fn show(self, text: &str, pos: Position) -> Self {
+        let x = pos.x;
+        let y = pos.y;
+        let letters = text;
+        let reset_code = "\x1B[0m";
+
+        let fg_code = color_to_ansi_code(&self.settings.fore, false);
+        let bg_code = color_to_ansi_code(&self.settings.back, true);
+
+        print!(
+            "\x1B[{};{}H\x1B[{};{}m{}{}",
+            x, y, fg_code, bg_code, letters, reset_code
+        );
+        io::stdout().flush().unwrap();
+
         Text {
-            settings: TextColorOption::default(),
+            settings: self.settings,
         }
     }
 
-    pub fn font_color(mut self, color: Color) {
+    pub fn foreground(mut self, color: Color) -> Self {
         self.settings.fore = color;
+        self
     }
 
-    pub fn background_color(mut self, color: Color) {
+    pub fn background(mut self, color: Color) -> Self {
         self.settings.back = color;
+        self
     }
 }
 
@@ -490,6 +591,7 @@ impl Text {
 /// Usage
 ///line(Position { x: 0, y: 5 }, "First", "blue");
 ///line(Position { x: 0, y: 11 }, "Sec", "red");
+#[deprecated(note = "Use `Text::show()` instead. This will be removed in version 0.0.5.")]
 pub fn line(position: Position, text: &str, color: &str) {
     let x = position.x;
     let y = position.y;
@@ -500,7 +602,8 @@ pub fn line(position: Position, text: &str, color: &str) {
     io::stdout().flush().unwrap();
 }
 
-pub fn enable_line_wrapping(enable: bool) {
+/// Toggle line wrapping in the terimal.
+pub fn line_wrapping(enable: bool) {
     if enable {
         println!("\x1b[?7h");
     } else {
