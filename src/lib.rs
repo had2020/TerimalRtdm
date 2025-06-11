@@ -41,7 +41,7 @@ impl App {
             enable_f_row_and_arrow: false,
             unknown_not_asci_code: false,
             virtual_cursor: Virtualcursor::Position { pos: pos!(0, 0) },
-            letter_grid: vec![vec![]],
+            letter_grid: vec![],
         }
     }
 }
@@ -594,11 +594,19 @@ impl Text {
     ///.show("Normal", pos!(0, 0));`
     /// Or:
     ///`Text::new().show("Test", pos!(0, 1));`
-    pub fn show(self, text: &str, pos: Pos) {
-        let mut pos_iter: usize = pos.x;
-        for ch in 0..text.len() {}
+    pub fn show(self, app: &mut App, text: &str, pos: Pos) {
+        while app.letter_grid.len() < text.len() {
+            app.letter_grid.push(vec![]);
+        }
 
-        let reset_code = "\x1B[0m";
+        while app.letter_grid[pos.x].len() < pos.y {
+            app.letter_grid[pos.x].push(Letter {
+                ch: ' ',
+                fg_code: 39,
+                bg_code: 49,
+                style: 0,
+            });
+        }
 
         let fg_code = color_to_ansi_code(&self.settings.fore, false);
         let bg_code = color_to_ansi_code(&self.settings.back, true);
@@ -610,6 +618,18 @@ impl Text {
             Style::Underline => 4,
         };
 
+        for ch in text.chars() {
+            app.letter_grid[pos.x].push(Letter {
+                ch: ch,
+                fg_code: fg_code,
+                bg_code: bg_code,
+                style: style_code,
+            });
+        }
+
+        //let reset_code = "\x1B[0m";
+
+        /*
         print!(
             "\x1B[{};{}H\x1B[{};{};{}m{}{}",
             pos.y + 1,
@@ -621,6 +641,7 @@ impl Text {
             reset_code
         );
         io::stdout().flush().unwrap();
+        */
     }
 
     /// Set the text/font color.
@@ -703,5 +724,27 @@ pub fn real_cursor_visibility(visable: bool) {
 }
 
 pub fn refresh() {
+    io::stdout().flush().unwrap();
+}
+
+/// draws/prints the stored data within letter_grid of app based on all changes.
+pub fn render(app: &App) {
+    let reset_code = "\x1B[0m";
+
+    for row in 0..app.letter_grid.len() {
+        for col in 0..app.letter_grid[row].len() {
+            print!(
+                "\x1B[{};{}H\x1B[{};{};{}m{}{}",
+                col + 1,
+                row + 1,
+                app.letter_grid[row][col].style,
+                app.letter_grid[row][col].fg_code,
+                app.letter_grid[row][col].bg_code,
+                app.letter_grid[row][col].ch,
+                reset_code
+            );
+        }
+    }
+
     io::stdout().flush().unwrap();
 }
