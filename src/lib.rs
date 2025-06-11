@@ -4,8 +4,10 @@ use std::time::Duration;
 
 /// Clears the screen.
 /// All text will be pushed out of view.
-pub fn clear() {
+/// The letter_grid property whill be reset.
+pub fn clear(app: &mut App) {
     print!("\x1B[2J\x1B[1;1H");
+    app.letter_grid = vec![];
 }
 
 pub fn move_cursor(app: &mut App, position: Pos) {
