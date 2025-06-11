@@ -17,13 +17,20 @@ pub enum Virtualcursor {
     NotEnabled,
 }
 
+pub struct Letter {
+    pub ch: char,
+    pub fg_code: i8,
+    pub bg_code: i8,
+    pub style: i8,
+}
+
 pub struct App {
     pub key_buffer: [u8; 3],
     pub keys_pressed: String,
     pub enable_f_row_and_arrow: bool,
     pub unknown_not_asci_code: bool,
     pub virtual_cursor: Virtualcursor,
-    pub letter_grid: Vec<Vec<char>>,
+    pub letter_grid: Vec<Vec<Letter>>,
 }
 
 impl App {
@@ -34,7 +41,7 @@ impl App {
             enable_f_row_and_arrow: false,
             unknown_not_asci_code: false,
             virtual_cursor: Virtualcursor::Position { pos: pos!(0, 0) },
-            letter_grid: vec![],
+            letter_grid: vec![vec![]],
         }
     }
 }
@@ -472,6 +479,7 @@ pub struct Text {
 pub struct TextColorOption {
     pub fore: Color,
     pub back: Color,
+    pub style: Style,
 }
 
 ///Custom goes from 0-255:
@@ -495,6 +503,7 @@ impl Default for TextColorOption {
         Self {
             fore: Color::White,
             back: Color::Default { back: true },
+            style: Style::Reset,
         }
     }
 }
@@ -562,6 +571,13 @@ pub fn color_to_ansi_code(color: &Color, is_bg: bool) -> i8 {
     }
 }
 
+pub enum Style {
+    Reset,
+    Bold,
+    Italic,
+    Underline,
+}
+
 impl Text {
     pub fn new() -> Self {
         Text {
@@ -579,15 +595,26 @@ impl Text {
     /// Or:
     ///`Text::new().show("Test", pos!(0, 1));`
     pub fn show(self, text: &str, pos: Pos) {
+        let mut pos_iter: usize = pos.x;
+        for ch in 0..text.len() {}
+
         let reset_code = "\x1B[0m";
 
         let fg_code = color_to_ansi_code(&self.settings.fore, false);
         let bg_code = color_to_ansi_code(&self.settings.back, true);
 
+        let style_code: i8 = match self.settings.style {
+            Style::Reset => 0,
+            Style::Bold => 1,
+            Style::Italic => 3,
+            Style::Underline => 4,
+        };
+
         print!(
-            "\x1B[{};{}H\x1B[{};{}m{}{}",
+            "\x1B[{};{}H\x1B[{};{};{}m{}{}",
             pos.y + 1,
             pos.x + 1,
+            style_code,
             fg_code,
             bg_code,
             text,
@@ -605,6 +632,11 @@ impl Text {
     /// Set the background color.
     pub fn background(mut self, color: Color) -> Self {
         self.settings.back = color;
+        self
+    }
+
+    pub fn style(mut self, style: Style) -> Self {
+        self.settings.style = style;
         self
     }
 }
