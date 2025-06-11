@@ -6,12 +6,8 @@ pub fn clear() {
     print!("\x1B[2J\x1B[1;1H");
 }
 
-pub fn cursor_state(enabled: bool) {
-    if enabled {
-        println!("\x1B[?25h");
-    } else {
-        println!("\x1B[?25l");
-    }
+pub fn move_cursor(position: Pos) {
+    print!("\x1B[{};{}H\x1B[7m{}\x1B[0m", position.y, position.x, "");
 }
 
 pub struct App {
@@ -26,8 +22,8 @@ impl App {
         App {
             key_buffer: [0; 3],
             keys_pressed: String::new(),
-            enable_f_row_and_arrow: false, //TODO demo case in docs
-            unknown_not_asci_code: false,  //TODO
+            enable_f_row_and_arrow: false,
+            unknown_not_asci_code: false,
         }
     }
 }
@@ -451,11 +447,11 @@ pub fn key_press_not_case_sen(app: &App, key: &str) -> bool {
     }
 }
 
-/// Move to cursor to a position
-pub fn move_cursor(position: Position) {
-    println!("\033[{};{}H", position.x, position.y);
-}
-
+/// Useage:
+/// `Text::new()
+///.foreground(Color::Green)
+///.background(Color::White)
+///.show("Normal", pos!(0, 0));
 pub struct Text {
     pub settings: TextColorOption,
 }
@@ -561,7 +557,15 @@ impl Text {
         }
     }
 
-    /// Display the text, at a given position.
+    /// Used to make a text appear, a a position,
+    /// each position being a different sectioned &str on screen.
+    /// Usage:
+    /// `Text::new()
+    ///.foreground(Color::Green) // <- Extra optional changes.
+    ///.background(Color::White) // </
+    ///.show("Normal", pos!(0, 0));`
+    /// Or:
+    ///`Text::new().show("Test", pos!(0, 1));`
     pub fn show(self, text: &str, pos: Pos) {
         let reset_code = "\x1B[0m";
 
@@ -617,4 +621,44 @@ pub fn line_wrapping(enable: bool) {
     } else {
         println!("\x1b[?7l");
     }
+    io::stdout().flush().unwrap();
+}
+
+pub fn real_cursor_up(x: usize) {
+    print!("\x1B[{}A", x);
+    io::stdout().flush().unwrap();
+}
+
+pub fn real_cursor_down(x: usize) {
+    print!("\x1B[{}B", x);
+    io::stdout().flush().unwrap();
+}
+
+pub fn real_cursor_left(x: usize) {
+    print!("\x1B[{}C", x);
+    io::stdout().flush().unwrap();
+}
+
+pub fn real_cursor_right(x: usize) {
+    print!("\x1B[{}D", x);
+    io::stdout().flush().unwrap();
+}
+
+pub fn real_cursor_move(position: Pos) {
+    print!("\x1B[{};{}H", position.x, position.y);
+    io::stdout().flush().unwrap();
+}
+
+pub fn real_cursor_visibility(visable: bool) {
+    if visable == true {
+        print!("\x1B[?25h");
+    } else {
+        print!("\x1B[?25l");
+    }
+    io::stdout().flush().unwrap();
+}
+
+/// Applys changes queued up by print!();
+pub fn refresh() {
+    io::stdout().flush().unwrap();
 }
