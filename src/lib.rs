@@ -2,12 +2,19 @@ use std::io::{self, Read, Write};
 use std::thread::sleep;
 use std::time::Duration;
 
+/// Clears the screen.
+/// All text will be pushed out of view.
 pub fn clear() {
     print!("\x1B[2J\x1B[1;1H");
 }
 
-pub fn move_cursor(position: Pos) {
-    print!("\x1B[{};{}H\x1B[7m{}\x1B[0m", position.y, position.x, "");
+pub fn move_cursor(app: &mut App, position: Pos) {
+    app.virtual_cursor = Virtualcursor::Position { pos: position };
+}
+
+pub enum Virtualcursor {
+    Position { pos: Pos },
+    NotEnabled,
 }
 
 pub struct App {
@@ -15,6 +22,8 @@ pub struct App {
     pub keys_pressed: String,
     pub enable_f_row_and_arrow: bool,
     pub unknown_not_asci_code: bool,
+    pub virtual_cursor: Virtualcursor,
+    pub letter_grid: Vec<Vec<char>>,
 }
 
 impl App {
@@ -24,10 +33,13 @@ impl App {
             keys_pressed: String::new(),
             enable_f_row_and_arrow: false,
             unknown_not_asci_code: false,
+            virtual_cursor: Virtualcursor::Position { pos: pos!(0, 0) },
+            letter_grid: vec![],
         }
     }
 }
 
+/// For proper functioning please enable before app loop,
 pub fn raw_mode(enabled: bool) {
     if enabled {
         std::process::Command::new("stty")
@@ -53,10 +65,10 @@ pub fn raw_line(message: &str) {
 
 /// mainly not used, holds program till key press and does not save for other if statements
 /// Usage
-//if halt_press_check(&mut app, "q") {
+//`if halt_press_check(&mut app, "q") {
 ///    clear();
 ///    break;
-///}
+///}`
 pub fn halt_press_check(app: &mut App, key: &str) -> bool {
     let pressed: bool;
     let pressed_key: String;
@@ -658,7 +670,6 @@ pub fn real_cursor_visibility(visable: bool) {
     io::stdout().flush().unwrap();
 }
 
-/// Applys changes queued up by print!();
 pub fn refresh() {
     io::stdout().flush().unwrap();
 }
