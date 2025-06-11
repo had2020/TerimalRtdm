@@ -12,11 +12,13 @@ pub fn move_cursor(app: &mut App, position: Pos) {
     app.virtual_cursor = Virtualcursor::Position { pos: position };
 }
 
+#[derive(Debug)]
 pub enum Virtualcursor {
     Position { pos: Pos },
     NotEnabled,
 }
 
+#[derive(Debug)]
 pub struct Letter {
     pub ch: char,
     pub fg_code: i8,
@@ -24,6 +26,7 @@ pub struct Letter {
     pub style: i8,
 }
 
+#[derive(Debug)]
 pub struct App {
     pub key_buffer: [u8; 3],
     pub keys_pressed: String,
@@ -595,12 +598,14 @@ impl Text {
     /// Or:
     ///`Text::new().show("Test", pos!(0, 1));`
     pub fn show(self, app: &mut App, text: &str, pos: Pos) {
-        while app.letter_grid.len() < text.len() {
+        // cols
+        while app.letter_grid.len() < pos.y + 1 {
             app.letter_grid.push(vec![]);
         }
 
-        while app.letter_grid[pos.x].len() < pos.y {
-            app.letter_grid[pos.x].push(Letter {
+        // rows
+        while app.letter_grid[pos.y].len() < pos.x + 1 + text.len() {
+            app.letter_grid[pos.y].push(Letter {
                 ch: ' ',
                 fg_code: 39,
                 bg_code: 49,
@@ -618,8 +623,8 @@ impl Text {
             Style::Underline => 4,
         };
 
-        for ch in text.chars() {
-            app.letter_grid[pos.x].push(Letter {
+        for (i, ch) in text.chars().enumerate() {
+            app.letter_grid[pos.y][pos.x + i] = (Letter {
                 ch: ch,
                 fg_code: fg_code,
                 bg_code: bg_code,
@@ -735,8 +740,8 @@ pub fn render(app: &App) {
         for col in 0..app.letter_grid[row].len() {
             print!(
                 "\x1B[{};{}H\x1B[{};{};{}m{}{}",
-                col + 1,
                 row + 1,
+                col + 1,
                 app.letter_grid[row][col].style,
                 app.letter_grid[row][col].fg_code,
                 app.letter_grid[row][col].bg_code,
