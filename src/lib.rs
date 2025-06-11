@@ -29,6 +29,12 @@ pub struct Letter {
 }
 
 #[derive(Debug)]
+pub struct LeadkeySequence {
+    pub lead_key: String,
+    pub following_sequence: Vec<String>,
+}
+
+#[derive(Debug)]
 pub struct App {
     pub key_buffer: [u8; 3],
     pub keys_pressed: String,
@@ -36,6 +42,7 @@ pub struct App {
     pub unknown_not_asci_code: bool,
     pub virtual_cursor: Virtualcursor,
     pub letter_grid: Vec<Vec<Letter>>,
+    pub lead_sequence: LeadkeySequence,
 }
 
 impl App {
@@ -47,6 +54,10 @@ impl App {
             unknown_not_asci_code: false,
             virtual_cursor: Virtualcursor::Position { pos: pos!(0, 0) },
             letter_grid: vec![],
+            lead_sequence: LeadkeySequence {
+                lead_key: String::new(),
+                following_sequence: vec![],
+            },
         }
     }
 }
@@ -449,11 +460,7 @@ pub fn collect_presses(app: &mut App) {
     }
 }
 
-/// to use you must collect_presses(), before calling this method
-/// refer to find_key_pressed() to see all key names for key &str
-/// This is the main way to check for input.
-/// to collect full input for typing you will need to make a loop within the loop.
-/// otherwise everyother key will be missing from collect_presses() method.
+#[deprecated(note = "Use `Pressed` instead. This will be removed in version 0.0.5.")]
 pub fn key_press(app: &App, key: &str) -> bool {
     if app.keys_pressed == key.to_string() {
         true
@@ -463,11 +470,49 @@ pub fn key_press(app: &App, key: &str) -> bool {
 }
 
 /// Same as key_press() method, but is not case sensitive.
+#[deprecated(note = "Use `Pressed_letter` instead. This will be removed in version 0.0.5.")]
 pub fn key_press_not_case_sen(app: &App, key: &str) -> bool {
     if app.keys_pressed.eq_ignore_ascii_case(key) {
         true
     } else {
         false
+    }
+}
+
+pub struct Key {
+    pub case_sen: bool,
+}
+
+impl Key {
+    /// Required to defaults optional functional para.
+    pub fn o() -> Self {
+        Key { case_sen: false }
+    }
+
+    /// to use you must collect_presses(), before calling this method
+    /// refer to `find_key_pressed_no_special`, and `find_key_pressed_f_row_and_arrow`  to see all key names for key &str
+    /// This is the main way to check for input.
+    /// to collect full input for typing you will need to make a loop within the loop.
+    /// otherwise everyother key will be missing from collect_presses() method.
+    pub fn pressed(self, app: &App, key: &str) -> bool {
+        if self.case_sen == true {
+            if app.keys_pressed.eq_ignore_ascii_case(key) {
+                true
+            } else {
+                false
+            }
+        } else {
+            if app.keys_pressed == key.to_string() {
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    /// Toggle the case sensitive optional functional para.
+    pub fn case_sen(self, on: bool) -> Self {
+        Key { case_sen: on }
     }
 }
 
