@@ -491,6 +491,7 @@ impl Default for TextColorOption {
     }
 }
 
+/// Converts the Color enum into appropriate codes for fore and back grounds
 pub fn color_to_ansi_code(color: &Color, is_bg: bool) -> i8 {
     match color {
         Color::Red => {
@@ -554,10 +555,14 @@ pub fn color_to_ansi_code(color: &Color, is_bg: bool) -> i8 {
 }
 
 impl Text {
-    pub fn show(self, text: &str, pos: Position) -> Self {
-        let x = pos.x;
-        let y = pos.y;
-        let letters = text;
+    pub fn new() -> Self {
+        Text {
+            settings: TextColorOption::default(),
+        }
+    }
+
+    /// Display the text, at a given position.
+    pub fn show(self, text: &str, pos: Pos) {
         let reset_code = "\x1B[0m";
 
         let fg_code = color_to_ansi_code(&self.settings.fore, false);
@@ -565,20 +570,23 @@ impl Text {
 
         print!(
             "\x1B[{};{}H\x1B[{};{}m{}{}",
-            x, y, fg_code, bg_code, letters, reset_code
+            pos.y + 1,
+            pos.x + 1,
+            fg_code,
+            bg_code,
+            text,
+            reset_code
         );
         io::stdout().flush().unwrap();
-
-        Text {
-            settings: self.settings,
-        }
     }
 
+    /// Set the text/font color.
     pub fn foreground(mut self, color: Color) -> Self {
         self.settings.fore = color;
         self
     }
 
+    /// Set the background color.
     pub fn background(mut self, color: Color) -> Self {
         self.settings.back = color;
         self
