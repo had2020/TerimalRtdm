@@ -14,10 +14,18 @@ pub fn move_cursor(app: &mut App, position: Pos) {
     app.virtual_cursor = Virtualcursor::Position { pos: position };
 }
 
+/// Controls the virutal cursor, which is made my the framework, while the real is hidden.
 #[derive(Debug)]
 pub enum Virtualcursor {
     Position { pos: Pos },
     NotEnabled,
+}
+
+/// Controls if the text should be shown under another if outside the closure.
+#[derive(Debug, PartialEq)]
+pub enum LeadOnly {
+    ShownLead { key: String },
+    AlwaysShown,
 }
 
 #[derive(Debug)]
@@ -26,6 +34,7 @@ pub struct Letter {
     pub fg_code: i8,
     pub bg_code: i8,
     pub style: i8,
+    pub when: LeadOnly,
 }
 
 #[derive(Debug)]
@@ -37,7 +46,7 @@ pub struct LeadkeySequence {
 #[derive(Debug)]
 pub struct App {
     pub key_buffer: [u8; 3],
-    pub keys_pressed: String,
+    pub keypressed: String,
     pub enable_f_row_and_arrow: bool,
     pub unknown_not_asci_code: bool,
     pub virtual_cursor: Virtualcursor,
@@ -49,7 +58,7 @@ impl App {
     pub fn new() -> Self {
         App {
             key_buffer: [0; 3],
-            keys_pressed: String::new(),
+            keypressed: String::new(),
             enable_f_row_and_arrow: false,
             unknown_not_asci_code: false,
             virtual_cursor: Virtualcursor::Position { pos: pos!(0, 0) },
@@ -454,15 +463,15 @@ pub fn find_key_pressed_no_special(app: &mut App) -> &'static str {
 /// Set app.enable_f_row_and_arrow = true, if you wish for all function keys.
 pub fn collect_presses(app: &mut App) {
     if app.enable_f_row_and_arrow == true {
-        app.keys_pressed = find_key_pressed_f_row_and_arrow(app).to_string();
+        app.keypressed = find_key_pressed_f_row_and_arrow(app).to_string();
     } else {
-        app.keys_pressed = find_key_pressed_no_special(app).to_string();
+        app.keypressed = find_key_pressed_no_special(app).to_string();
     }
 }
 
 #[deprecated(note = "Use `Pressed` instead. This will be removed in version 0.0.5.")]
 pub fn key_press(app: &App, key: &str) -> bool {
-    if app.keys_pressed == key.to_string() {
+    if app.keypressed == key.to_string() {
         true
     } else {
         false
@@ -472,37 +481,40 @@ pub fn key_press(app: &App, key: &str) -> bool {
 /// Same as key_press() method, but is not case sensitive.
 #[deprecated(note = "Use `Pressed_letter` instead. This will be removed in version 0.0.5.")]
 pub fn key_press_not_case_sen(app: &App, key: &str) -> bool {
-    if app.keys_pressed.eq_ignore_ascii_case(key) {
+    if app.keypressed.eq_ignore_ascii_case(key) {
         true
     } else {
         false
     }
 }
 
+/// Used for ideomatics.
 pub struct Key {
     pub case_sen: bool,
 }
 
 impl Key {
-    /// Required to defaults optional functional para.
+    /// Required to default optional functional para for case sensitivity, without an extra bool para in pressed.
     pub fn o() -> Self {
         Key { case_sen: false }
     }
 
-    /// to use you must collect_presses(), before calling this method
+    /// in order to use you must `collect_presses()`, before calling this method
     /// refer to `find_key_pressed_no_special`, and `find_key_pressed_f_row_and_arrow`  to see all key names for key &str
     /// This is the main way to check for input.
     /// to collect full input for typing you will need to make a loop within the loop.
-    /// otherwise everyother key will be missing from collect_presses() method.
-    pub fn pressed(self, app: &App, key: &str) -> bool {
+    /// otherwise everyother key will be missing from `collect_presses()` method.
+    pub fn pressed(self, app: &mut App, key: &str) -> bool {
         if self.case_sen == true {
-            if app.keys_pressed.eq_ignore_ascii_case(key) {
+            if app.keypressed.eq_ignore_ascii_case(key) {
+                clear_nonlead(app);
                 true
             } else {
                 false
             }
         } else {
-            if app.keys_pressed == key.to_string() {
+            if app.keypressed == key.to_string() {
+                clear_nonlead(app);
                 true
             } else {
                 false
@@ -513,6 +525,27 @@ impl Key {
     /// Toggle the case sensitive optional functional para.
     pub fn case_sen(self, on: bool) -> Self {
         Key { case_sen: on }
+    }
+}
+
+/// Clears non-lead key letters if not AlwaysShown.
+pub fn clear_nonlead(app: &mut App) {
+    for row in 0..app.letter_grid.len() {
+        for col in 0..app.letter_grid[row].len() {
+            if app.letter_grid[row][col].when
+                != (LeadOnly::ShownLead {
+                    key: app.keypressed.clone(),
+                })
+            {
+                app.letter_grid[row][col] = Letter {
+                    ch: ' ',
+                    fg_code: 39,
+                    bg_code: 49,
+                    style: 0,
+                    when: LeadOnly::AlwaysShown,
+                }
+            }
+        }
     }
 }
 
@@ -657,6 +690,7 @@ impl Text {
                 fg_code: 39,
                 bg_code: 49,
                 style: 0,
+                when: LeadOnly::AlwaysShown,
             });
         }
 
@@ -676,24 +710,11 @@ impl Text {
                 fg_code: fg_code,
                 bg_code: bg_code,
                 style: style_code,
+                when: LeadOnly::ShownLead {
+                    key: app.keypressed.to_string(),
+                },
             });
         }
-
-        //let reset_code = "\x1B[0m";
-
-        /*
-        print!(
-            "\x1B[{};{}H\x1B[{};{};{}m{}{}",
-            pos.y + 1,
-            pos.x + 1,
-            style_code,
-            fg_code,
-            bg_code,
-            text,
-            reset_code
-        );
-        io::stdout().flush().unwrap();
-        */
     }
 
     /// Set the text/font color.
