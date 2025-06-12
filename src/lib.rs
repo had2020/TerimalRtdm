@@ -51,7 +51,6 @@ pub struct App {
     pub unknown_not_asci_code: bool,
     pub virtual_cursor: Virtualcursor,
     pub letter_grid: Vec<Vec<Letter>>,
-    pub lead_sequence: LeadkeySequence,
 }
 
 impl App {
@@ -63,10 +62,6 @@ impl App {
             unknown_not_asci_code: false,
             virtual_cursor: Virtualcursor::Position { pos: pos!(0, 0) },
             letter_grid: vec![],
-            lead_sequence: LeadkeySequence {
-                lead_key: String::new(),
-                following_sequence: vec![],
-            },
         }
     }
 }
