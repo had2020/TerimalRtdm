@@ -15,10 +15,34 @@ pub fn move_cursor(app: &mut App, position: Pos) {
 }
 
 /// Controls the virutal cursor, which is made my the framework, while the real is hidden.
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Virtualcursor {
     Position { pos: Pos },
     NotEnabled,
+}
+
+#[derive(Clone)]
+pub enum ChangeColor {
+    On { color: Color },
+    No,
+}
+
+#[derive(Clone)]
+pub enum ChangeCh {
+    On { ch: char },
+    No,
+}
+
+pub enum ChangeStyle {
+    On { style: Style },
+    No,
+}
+
+pub struct VirtualCursorTheme {
+    pub style: ChangeStyle,
+    pub fg_code: ChangeColor,
+    pub bg_code: ChangeColor,
+    pub ch: ChangeCh,
 }
 
 /// Controls if the text should be shown under another if outside the closure.
@@ -43,13 +67,14 @@ pub struct LeadkeySequence {
     pub following_sequence: Vec<String>,
 }
 
-#[derive(Debug)]
+/// Global app memory access point, where program data is stored, for various perposes.
 pub struct App {
     pub key_buffer: [u8; 3],
     pub keypressed: String,
     pub enable_f_row_and_arrow: bool,
     pub unknown_not_asci_code: bool,
     pub virtual_cursor: Virtualcursor,
+    pub virtual_cursor_theme: VirtualCursorTheme,
     pub letter_grid: Vec<Vec<Letter>>,
 }
 
@@ -61,6 +86,16 @@ impl App {
             enable_f_row_and_arrow: false,
             unknown_not_asci_code: false,
             virtual_cursor: Virtualcursor::Position { pos: pos!(0, 0) },
+            virtual_cursor_theme: VirtualCursorTheme {
+                style: ChangeStyle::On {
+                    style: Style::Reset,
+                },
+                fg_code: ChangeColor::On {
+                    color: Color::White,
+                },
+                bg_code: ChangeColor::On { color: Color::Blue },
+                ch: ChangeCh::No,
+            },
             letter_grid: vec![],
         }
     }
@@ -126,7 +161,7 @@ pub struct Position {
 }
 
 /// For idiomatically storing postion vector
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Pos {
     pub x: usize,
     pub y: usize,
@@ -564,6 +599,7 @@ pub struct TextColorOption {
 /// 0-15 is standard bright colors;
 /// 16-231 is custom colors from 6 levels of reds, greens, and blues;
 /// 232-255 is a grayscale ramp, having 24 shades of gray from dark to light.
+#[derive(Clone)]
 pub enum Color {
     Red,
     Green,
@@ -814,5 +850,47 @@ pub fn render(app: &App) {
         }
     }
 
+    if let Virtualcursor::Position { pos } = app.virtual_cursor {
+        let style: i8 = match app.virtual_cursor_theme.style {
+            ChangeStyle::On {
+                style: Style::Reset,
+            } => 0,
+            ChangeStyle::On { style: Style::Bold } => 1,
+            ChangeStyle::On {
+                style: Style::Italic,
+            } => 3,
+            ChangeStyle::On {
+                style: Style::Underline,
+            } => 4,
+            ChangeStyle::No => app.letter_grid[pos.x][pos.y].style,
+        };
+
+        let fg_code: i8 = match app.virtual_cursor_theme.fg_code {
+            ChangeColor::No => app.letter_grid[pos.x][pos.y].fg_code,
+            ChangeColor::On { color } => color_to_ansi_code(&color.clone(), false),
+        };
+
+        print!(
+            "\x1B[{};{}H\x1B[{};{};{}m{}{}",
+            pos.x + 1,
+            pos.y + 1,
+            style,
+            app.letter_grid[pos.x][pos.y].fg_code,
+            app.letter_grid[pos.x][pos.y].bg_code,
+            app.letter_grid[pos.x][pos.y].ch,
+            reset_code
+        );
+    }
+
     io::stdout().flush().unwrap();
+}
+
+/// The virtual cursor offers a more interactive and fluid experience across most systems.
+/// It is enabled by default.
+pub fn toggle_virtual_cursor(app: &mut App, on: bool) {
+    if on == true {
+        app.virtual_cursor = Virtualcursor::Position { pos: pos!(0, 0) };
+    } else {
+        app.virtual_cursor = Virtualcursor::NotEnabled;
+    }
 }
