@@ -21,13 +21,13 @@ pub enum Virtualcursor {
     NotEnabled,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Copy)]
 pub enum ChangeColor {
     On { color: Color },
     No,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Copy)]
 pub enum ChangeCh {
     On { ch: char },
     No,
@@ -599,7 +599,7 @@ pub struct TextColorOption {
 /// 0-15 is standard bright colors;
 /// 16-231 is custom colors from 6 levels of reds, greens, and blues;
 /// 232-255 is a grayscale ramp, having 24 shades of gray from dark to light.
-#[derive(Clone)]
+#[derive(Clone, Copy)]
 pub enum Color {
     Red,
     Green,
@@ -870,14 +870,24 @@ pub fn render(app: &App) {
             ChangeColor::On { color } => color_to_ansi_code(&color.clone(), false),
         };
 
+        let bg_code: i8 = match app.virtual_cursor_theme.bg_code {
+            ChangeColor::No => app.letter_grid[pos.x][pos.y].bg_code,
+            ChangeColor::On { color } => color_to_ansi_code(&color.clone(), false),
+        };
+
+        let ch: char = match app.virtual_cursor_theme.ch {
+            ChangeCh::No => app.letter_grid[pos.x][pos.y].ch,
+            ChangeCh::On { ch } => ch,
+        };
+
         print!(
             "\x1B[{};{}H\x1B[{};{};{}m{}{}",
             pos.x + 1,
             pos.y + 1,
             style,
-            app.letter_grid[pos.x][pos.y].fg_code,
-            app.letter_grid[pos.x][pos.y].bg_code,
-            app.letter_grid[pos.x][pos.y].ch,
+            fg_code,
+            bg_code,
+            ch,
             reset_code
         );
     }
@@ -892,5 +902,13 @@ pub fn toggle_virtual_cursor(app: &mut App, on: bool) {
         app.virtual_cursor = Virtualcursor::Position { pos: pos!(0, 0) };
     } else {
         app.virtual_cursor = Virtualcursor::NotEnabled;
+    }
+}
+
+/// Use the method to enable control of the virtual cursor,
+/// when toggled, each time this function is ran.
+pub fn cursor_arrow_direct(app: &mut App, on: bool) {
+    if on == true {
+        Key::o().pressed(&mut app, "") // TODO trait to change to find_key_pressed_f_row_and_arrow
     }
 }
