@@ -10,8 +10,91 @@ pub fn clear(app: &mut App) {
     app.letter_grid = vec![];
 }
 
-pub fn move_cursor(app: &mut App, position: Pos) {
-    app.virtual_cursor = Virtualcursor::Position { pos: position };
+/// move cursor directly towards a coordinate position.
+pub fn mov_cur_to(app: &mut App, position: Pos) {
+    if app.virtual_cursor != Virtualcursor::NotEnabled {
+        app.virtual_cursor = Virtualcursor::Position { pos: position };
+    }
+}
+
+/// Direction enum
+pub enum Dir {
+    Up,
+    Down,
+    Left,
+    Right,
+}
+
+/// Move Cursor up units.
+pub fn mov_cur_up(app: &mut App, units: usize) {
+    if app.virtual_cursor != Virtualcursor::NotEnabled {
+        let last_pos: Pos = match app.virtual_cursor {
+            Virtualcursor::NotEnabled => pos!(0, 0),
+            Virtualcursor::Position { pos } => pos,
+        };
+
+        app.virtual_cursor = Virtualcursor::Position {
+            pos: pos!(last_pos.x, last_pos.y + units),
+        };
+    }
+}
+
+/// Move Cursor down units.
+pub fn mov_cur_down(app: &mut App, units: usize) {
+    if app.virtual_cursor != Virtualcursor::NotEnabled {
+        let last_pos: Pos = match app.virtual_cursor {
+            Virtualcursor::NotEnabled => pos!(0, 0),
+            Virtualcursor::Position { pos } => pos,
+        };
+
+        if last_pos.y > 0 {
+            app.virtual_cursor = Virtualcursor::Position {
+                pos: pos!(last_pos.x, last_pos.y - units),
+            };
+        }
+    }
+}
+
+/// Move Cursor left units.
+pub fn mov_cur_left(app: &mut App, units: usize) {
+    if app.virtual_cursor != Virtualcursor::NotEnabled {
+        let last_pos: Pos = match app.virtual_cursor {
+            Virtualcursor::NotEnabled => pos!(0, 0),
+            Virtualcursor::Position { pos } => pos,
+        };
+
+        if last_pos.x > 0 {
+            app.virtual_cursor = Virtualcursor::Position {
+                pos: pos!(last_pos.x - units, last_pos.y),
+            };
+        }
+    }
+}
+
+/// Move Cursor right units.
+pub fn mov_cur_right(app: &mut App, units: usize) {
+    if app.virtual_cursor != Virtualcursor::NotEnabled {
+        let last_pos: Pos = match app.virtual_cursor {
+            Virtualcursor::NotEnabled => pos!(0, 0),
+            Virtualcursor::Position { pos } => pos,
+        };
+
+        app.virtual_cursor = Virtualcursor::Position {
+            pos: pos!(last_pos.x + units, last_pos.y),
+        };
+    }
+}
+
+/// Move cursor in a direction of units.
+pub fn mov_cur_dir(app: &mut App, directon: Dir, units: usize) {
+    if app.virtual_cursor != Virtualcursor::NotEnabled {
+        match directon {
+            Dir::Up => mov_cur_up(app, units),
+            Dir::Down => mov_cur_down(app, units),
+            Dir::Left => mov_cur_left(app, units),
+            Dir::Right => mov_cur_right(app, units),
+        }
+    }
 }
 
 /// Controls the virutal cursor, which is made my the framework, while the real is hidden.
@@ -902,13 +985,5 @@ pub fn toggle_virtual_cursor(app: &mut App, on: bool) {
         app.virtual_cursor = Virtualcursor::Position { pos: pos!(0, 0) };
     } else {
         app.virtual_cursor = Virtualcursor::NotEnabled;
-    }
-}
-
-/// Use the method to enable control of the virtual cursor,
-/// when toggled, each time this function is ran.
-pub fn cursor_arrow_direct(app: &mut App, on: bool) {
-    if on == true {
-        Key::o().pressed(&mut app, "") // TODO trait to change to find_key_pressed_f_row_and_arrow
     }
 }
