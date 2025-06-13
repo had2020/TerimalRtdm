@@ -75,13 +75,9 @@ impl App {
             unknown_not_asci_code: false,
             virtual_cursor: Virtualcursor::Position { pos: pos!(0, 0) },
             virtual_cursor_theme: VirtualCursorTheme {
-                style: ChangeStyle::On {
-                    style: Style::Reset,
-                },
-                fg_code: ChangeColor::On {
-                    color: Color::White,
-                },
-                bg_code: ChangeColor::On { color: Color::Blue },
+                style: ChangeStyle::No,
+                fg_code: ChangeColor::No,
+                bg_code: ChangeColor::No,
                 ch: ChangeCh::No,
             },
             letter_grid: vec![],
@@ -92,12 +88,14 @@ impl App {
 /// For proper functioning please enable before app loop,
 pub fn raw_mode(enabled: bool) {
     if enabled {
+        //real_cursor_visibility(false);
         std::process::Command::new("stty")
             .arg("-echo")
             .arg("raw")
             .status()
             .unwrap();
     } else {
+        //real_cursor_visibility(true);
         std::process::Command::new("stty")
             .arg("echo")
             .arg("-raw")
@@ -839,45 +837,60 @@ pub fn render(app: &App) {
     }
 
     if let Virtualcursor::Position { pos } = app.virtual_cursor {
-        let style: i8 = match app.virtual_cursor_theme.style {
-            ChangeStyle::On {
-                style: Style::Reset,
-            } => 0,
-            ChangeStyle::On { style: Style::Bold } => 1,
-            ChangeStyle::On {
-                style: Style::Italic,
-            } => 3,
-            ChangeStyle::On {
-                style: Style::Underline,
-            } => 4,
-            ChangeStyle::No => app.letter_grid[pos.y][pos.x].style,
-        };
+        if pos.y < app.letter_grid.len() && pos.x < app.letter_grid[pos.y].len() {
+            let cell = &app.letter_grid[pos.y][pos.x];
 
-        let fg_code: i8 = match app.virtual_cursor_theme.fg_code {
-            ChangeColor::No => app.letter_grid[pos.y][pos.x].fg_code,
-            ChangeColor::On { color } => color_to_ansi_code(&color.clone(), false),
-        };
+            let style: i8 = match app.virtual_cursor_theme.style {
+                ChangeStyle::On {
+                    style: Style::Reset,
+                } => 0,
+                ChangeStyle::On { style: Style::Bold } => 1,
+                ChangeStyle::On {
+                    style: Style::Italic,
+                } => 3,
+                ChangeStyle::On {
+                    style: Style::Underline,
+                } => 4,
+                ChangeStyle::No => cell.style,
+            };
 
-        let bg_code: i8 = match app.virtual_cursor_theme.bg_code {
-            ChangeColor::No => app.letter_grid[pos.y][pos.x].bg_code,
-            ChangeColor::On { color } => color_to_ansi_code(&color.clone(), false),
-        };
+            let fg_code: i8 = match app.virtual_cursor_theme.fg_code {
+                ChangeColor::No => cell.fg_code,
+                ChangeColor::On { color } => color_to_ansi_code(&color, false),
+            };
 
-        let ch: char = match app.virtual_cursor_theme.ch {
-            ChangeCh::No => app.letter_grid[pos.y][pos.x].ch,
-            ChangeCh::On { ch } => ch,
-        };
+            let bg_code: i8 = match app.virtual_cursor_theme.bg_code {
+                ChangeColor::No => cell.bg_code,
+                ChangeColor::On { color } => color_to_ansi_code(&color, false),
+            };
 
-        print!(
-            "\x1B[{};{}H\x1B[{};{};{}m{}{}",
-            pos.y + 1,
-            pos.x + 1,
-            style,
-            fg_code,
-            bg_code,
-            ch,
-            reset_code
-        );
+            let ch: char = match app.virtual_cursor_theme.ch {
+                ChangeCh::No => cell.ch,
+                ChangeCh::On { ch } => ch,
+            };
+
+            print!(
+                "\x1B[{};{}H\x1B[{};{};{}m{}{}",
+                pos.y + 1,
+                pos.x + 1,
+                style,
+                fg_code,
+                bg_code,
+                ch,
+                reset_code
+            );
+        } else {
+            print!(
+                "\x1B[{};{}H\x1B[{};{};{}m{}{}",
+                pos.y + 1,
+                pos.x + 1,
+                " ",
+                39,
+                49,
+                " ",
+                reset_code
+            );
+        }
     }
 
     io::stdout().flush().unwrap();
@@ -924,7 +937,7 @@ pub fn mov_cur_up(app: &mut App, units: usize) {
             Virtualcursor::Position { pos } => pos,
         };
 
-        if app.letter_grid[last_pos.y].len() > last_pos.y {
+        if last_pos.y != 0 {
             app.virtual_cursor = Virtualcursor::Position {
                 pos: pos!(last_pos.x, last_pos.y - units),
             };
@@ -974,11 +987,9 @@ pub fn mov_cur_right(app: &mut App, units: usize) {
             Virtualcursor::Position { pos } => pos,
         };
 
-        if app.letter_grid.len() != last_pos.x {
-            app.virtual_cursor = Virtualcursor::Position {
-                pos: pos!(last_pos.x + units, last_pos.y),
-            };
-        }
+        app.virtual_cursor = Virtualcursor::Position {
+            pos: pos!(last_pos.x + units, last_pos.y),
+        };
     }
 }
 
