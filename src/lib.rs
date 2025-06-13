@@ -1080,7 +1080,7 @@ impl Mov {
                 Virtualcursor::Position { pos } => pos,
             };
 
-            if app.letter_grid[last_pos.y].len() > last_pos.x {
+            if app.letter_grid[last_pos.y].len() > last_pos.y {
                 app.virtual_cursor = Virtualcursor::Position {
                     pos: pos!(last_pos.x, last_pos.y + units),
                 };
