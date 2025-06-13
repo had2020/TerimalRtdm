@@ -2,101 +2,6 @@ use std::io::{self, Read, Write};
 use std::thread::sleep;
 use std::time::Duration;
 
-/// Clears the screen.
-/// All text will be pushed out of view.
-/// The letter_grid property whill be reset.
-pub fn clear(app: &mut App) {
-    print!("\x1B[2J\x1B[1;1H");
-    app.letter_grid = vec![];
-}
-
-/// move cursor directly towards a coordinate position.
-pub fn mov_cur_to(app: &mut App, position: Pos) {
-    if app.virtual_cursor != Virtualcursor::NotEnabled {
-        app.virtual_cursor = Virtualcursor::Position { pos: position };
-    }
-}
-
-/// Direction enum
-pub enum Dir {
-    Up,
-    Down,
-    Left,
-    Right,
-}
-
-/// Move Cursor up units.
-pub fn mov_cur_up(app: &mut App, units: usize) {
-    if app.virtual_cursor != Virtualcursor::NotEnabled {
-        let last_pos: Pos = match app.virtual_cursor {
-            Virtualcursor::NotEnabled => pos!(0, 0),
-            Virtualcursor::Position { pos } => pos,
-        };
-
-        app.virtual_cursor = Virtualcursor::Position {
-            pos: pos!(last_pos.x, last_pos.y + units),
-        };
-    }
-}
-
-/// Move Cursor down units.
-pub fn mov_cur_down(app: &mut App, units: usize) {
-    if app.virtual_cursor != Virtualcursor::NotEnabled {
-        let last_pos: Pos = match app.virtual_cursor {
-            Virtualcursor::NotEnabled => pos!(0, 0),
-            Virtualcursor::Position { pos } => pos,
-        };
-
-        if last_pos.y > 0 {
-            app.virtual_cursor = Virtualcursor::Position {
-                pos: pos!(last_pos.x, last_pos.y - units),
-            };
-        }
-    }
-}
-
-/// Move Cursor left units.
-pub fn mov_cur_left(app: &mut App, units: usize) {
-    if app.virtual_cursor != Virtualcursor::NotEnabled {
-        let last_pos: Pos = match app.virtual_cursor {
-            Virtualcursor::NotEnabled => pos!(0, 0),
-            Virtualcursor::Position { pos } => pos,
-        };
-
-        if last_pos.x > 0 {
-            app.virtual_cursor = Virtualcursor::Position {
-                pos: pos!(last_pos.x - units, last_pos.y),
-            };
-        }
-    }
-}
-
-/// Move Cursor right units.
-pub fn mov_cur_right(app: &mut App, units: usize) {
-    if app.virtual_cursor != Virtualcursor::NotEnabled {
-        let last_pos: Pos = match app.virtual_cursor {
-            Virtualcursor::NotEnabled => pos!(0, 0),
-            Virtualcursor::Position { pos } => pos,
-        };
-
-        app.virtual_cursor = Virtualcursor::Position {
-            pos: pos!(last_pos.x + units, last_pos.y),
-        };
-    }
-}
-
-/// Move cursor in a direction of units.
-pub fn mov_cur_dir(app: &mut App, directon: Dir, units: usize) {
-    if app.virtual_cursor != Virtualcursor::NotEnabled {
-        match directon {
-            Dir::Up => mov_cur_up(app, units),
-            Dir::Down => mov_cur_down(app, units),
-            Dir::Left => mov_cur_left(app, units),
-            Dir::Right => mov_cur_right(app, units),
-        }
-    }
-}
-
 /// Controls the virutal cursor, which is made my the framework, while the real is hidden.
 #[derive(Debug, PartialEq)]
 pub enum Virtualcursor {
@@ -945,28 +850,28 @@ pub fn render(app: &App) {
             ChangeStyle::On {
                 style: Style::Underline,
             } => 4,
-            ChangeStyle::No => app.letter_grid[pos.x][pos.y].style,
+            ChangeStyle::No => app.letter_grid[pos.y][pos.x].style,
         };
 
         let fg_code: i8 = match app.virtual_cursor_theme.fg_code {
-            ChangeColor::No => app.letter_grid[pos.x][pos.y].fg_code,
+            ChangeColor::No => app.letter_grid[pos.y][pos.x].fg_code,
             ChangeColor::On { color } => color_to_ansi_code(&color.clone(), false),
         };
 
         let bg_code: i8 = match app.virtual_cursor_theme.bg_code {
-            ChangeColor::No => app.letter_grid[pos.x][pos.y].bg_code,
+            ChangeColor::No => app.letter_grid[pos.y][pos.x].bg_code,
             ChangeColor::On { color } => color_to_ansi_code(&color.clone(), false),
         };
 
         let ch: char = match app.virtual_cursor_theme.ch {
-            ChangeCh::No => app.letter_grid[pos.x][pos.y].ch,
+            ChangeCh::No => app.letter_grid[pos.y][pos.x].ch,
             ChangeCh::On { ch } => ch,
         };
 
         print!(
             "\x1B[{};{}H\x1B[{};{};{}m{}{}",
-            pos.x + 1,
             pos.y + 1,
+            pos.x + 1,
             style,
             fg_code,
             bg_code,
@@ -985,5 +890,106 @@ pub fn toggle_virtual_cursor(app: &mut App, on: bool) {
         app.virtual_cursor = Virtualcursor::Position { pos: pos!(0, 0) };
     } else {
         app.virtual_cursor = Virtualcursor::NotEnabled;
+    }
+}
+
+/// Clears the screen.
+/// All text will be pushed out of view.
+/// The letter_grid property whill be reset.
+pub fn clear(app: &mut App) {
+    print!("\x1B[2J\x1B[1;1H");
+    app.letter_grid = vec![];
+}
+
+/// move cursor directly towards a coordinate position.
+pub fn mov_cur_to(app: &mut App, position: Pos) {
+    if app.virtual_cursor != Virtualcursor::NotEnabled {
+        app.virtual_cursor = Virtualcursor::Position { pos: position };
+    }
+}
+
+/// Direction enum
+pub enum Dir {
+    Up,
+    Down,
+    Left,
+    Right,
+}
+
+/// Move Cursor up (units).
+pub fn mov_cur_up(app: &mut App, units: usize) {
+    if app.virtual_cursor != Virtualcursor::NotEnabled {
+        let last_pos: Pos = match app.virtual_cursor {
+            Virtualcursor::NotEnabled => pos!(0, 0),
+            Virtualcursor::Position { pos } => pos,
+        };
+
+        if app.letter_grid[last_pos.y].len() > last_pos.y {
+            app.virtual_cursor = Virtualcursor::Position {
+                pos: pos!(last_pos.x, last_pos.y - units),
+            };
+        }
+    }
+}
+
+/// Move Cursor down (units).
+pub fn mov_cur_down(app: &mut App, units: usize) {
+    if app.virtual_cursor != Virtualcursor::NotEnabled {
+        let last_pos: Pos = match app.virtual_cursor {
+            Virtualcursor::NotEnabled => pos!(0, 0),
+            Virtualcursor::Position { pos } => pos,
+        };
+
+        app.virtual_cursor = Virtualcursor::Position {
+            pos: pos!(last_pos.x, last_pos.y + units),
+        };
+    }
+}
+
+/// Move Cursor left (units).
+pub fn mov_cur_left(app: &mut App, units: usize) {
+    if app.virtual_cursor != Virtualcursor::NotEnabled {
+        let last_pos: Pos = match app.virtual_cursor {
+            Virtualcursor::NotEnabled => pos!(0, 0),
+            Virtualcursor::Position { pos } => pos,
+        };
+
+        if last_pos.x > 0 {
+            app.virtual_cursor = Virtualcursor::Position {
+                pos: pos!(last_pos.x - units, last_pos.y),
+            };
+        } else {
+            app.virtual_cursor = Virtualcursor::Position {
+                pos: pos!(0, last_pos.y),
+            };
+        }
+    }
+}
+
+/// Move Cursor right (units).
+pub fn mov_cur_right(app: &mut App, units: usize) {
+    if app.virtual_cursor != Virtualcursor::NotEnabled {
+        let last_pos: Pos = match app.virtual_cursor {
+            Virtualcursor::NotEnabled => pos!(0, 0),
+            Virtualcursor::Position { pos } => pos,
+        };
+
+        if app.letter_grid.len() != last_pos.x {
+            app.virtual_cursor = Virtualcursor::Position {
+                pos: pos!(last_pos.x + units, last_pos.y),
+            };
+        }
+    }
+}
+
+/// Move cursor in a (direction) of (units).
+pub fn mov_cur_dir(app: &mut App, directon: Dir, units: usize) {
+    if app.virtual_cursor != Virtualcursor::NotEnabled {
+        match directon {
+            Dir::Up => mov_cur_up(app, units),
+            Dir::Down => mov_cur_down(app, units),
+            Dir::Left => mov_cur_left(app, units),
+            Dir::Right => mov_cur_right(app, units),
+        }
     }
 }
