@@ -710,16 +710,20 @@ impl Text {
 
     /// Used to make a text appear, a a position,
     /// each position being a different sectioned &str on screen.
+    ///
     /// Usage:
+    ///
     /// `Text::new()
     ///.foreground(Color::Green) // <- Extra optional changes.
     ///.background(Color::White) // </
     ///.show("Normal", pos!(0, 0));`
-    /// Or:
+    ///
+    /// Or, without the extra styling/para:
+    ///
     ///`Text::new().show("Test", pos!(0, 1));`
     pub fn show(self, app: &mut App, text: &str, pos: Pos) {
         // cols
-        while app.letter_grid.len() < pos.y + 1 {
+        while app.letter_grid.len() < pos.y + 2 {
             app.letter_grid.push(vec![]);
         }
 
@@ -969,78 +973,91 @@ pub enum Dir {
     Right,
 }
 
-/// Move Cursor up (units).
-pub fn mov_cur_up(app: &mut App, units: usize) {
-    if app.virtual_cursor != Virtualcursor::NotEnabled {
-        let last_pos: Pos = match app.virtual_cursor {
-            Virtualcursor::NotEnabled => pos!(0, 0),
-            Virtualcursor::Position { pos } => pos,
-        };
+/// Quick reminder: this is not an assembly instruction!
+/// This a optinal setting shared by the cursor move pattern of functions.
+/// Therefore it's a trait of this class, with implications of methods to move the curosr.
+pub struct Mov {
+    pub wrap: bool, // Warpping such as when you try to move the carvet off a line.
+}
 
-        if last_pos.y != 0 {
+impl Mov {
+    pub fn cur() -> Self {
+        Mov { wrap: false }
+    }
+
+    /// Move Cursor up (units).
+    pub fn up(self, app: &mut App, units: usize) {
+        if app.virtual_cursor != Virtualcursor::NotEnabled {
+            let last_pos: Pos = match app.virtual_cursor {
+                Virtualcursor::NotEnabled => pos!(0, 0),
+                Virtualcursor::Position { pos } => pos,
+            };
+
+            if last_pos.y != 0 {
+                app.virtual_cursor = Virtualcursor::Position {
+                    pos: pos!(last_pos.x, last_pos.y - units),
+                };
+            }
+        }
+    }
+
+    /// Move Cursor down (units).
+    pub fn down(self, app: &mut App, units: usize) {
+        if app.virtual_cursor != Virtualcursor::NotEnabled {
+            let last_pos: Pos = match app.virtual_cursor {
+                Virtualcursor::NotEnabled => pos!(0, 0),
+                Virtualcursor::Position { pos } => pos,
+            };
+
             app.virtual_cursor = Virtualcursor::Position {
-                pos: pos!(last_pos.x, last_pos.y - units),
+                pos: pos!(last_pos.x, last_pos.y + units),
             };
         }
     }
-}
 
-/// Move Cursor down (units).
-pub fn mov_cur_down(app: &mut App, units: usize) {
-    if app.virtual_cursor != Virtualcursor::NotEnabled {
-        let last_pos: Pos = match app.virtual_cursor {
-            Virtualcursor::NotEnabled => pos!(0, 0),
-            Virtualcursor::Position { pos } => pos,
-        };
-
-        app.virtual_cursor = Virtualcursor::Position {
-            pos: pos!(last_pos.x, last_pos.y + units),
-        };
-    }
-}
-
-/// Move Cursor left (units).
-pub fn mov_cur_left(app: &mut App, units: usize) {
-    if app.virtual_cursor != Virtualcursor::NotEnabled {
-        let last_pos: Pos = match app.virtual_cursor {
-            Virtualcursor::NotEnabled => pos!(0, 0),
-            Virtualcursor::Position { pos } => pos,
-        };
-
-        if last_pos.x > 0 {
-            app.virtual_cursor = Virtualcursor::Position {
-                pos: pos!(last_pos.x - units, last_pos.y),
+    /// Move Cursor left (units).
+    pub fn left(self, app: &mut App, units: usize) {
+        if app.virtual_cursor != Virtualcursor::NotEnabled {
+            let last_pos: Pos = match app.virtual_cursor {
+                Virtualcursor::NotEnabled => pos!(0, 0),
+                Virtualcursor::Position { pos } => pos,
             };
-        } else {
+
+            if last_pos.x > 0 {
+                app.virtual_cursor = Virtualcursor::Position {
+                    pos: pos!(last_pos.x - units, last_pos.y),
+                };
+            } else {
+                app.virtual_cursor = Virtualcursor::Position {
+                    pos: pos!(0, last_pos.y),
+                };
+            }
+        }
+    }
+
+    /// Move Cursor right (units).
+    pub fn right(self, app: &mut App, units: usize) {
+        if app.virtual_cursor != Virtualcursor::NotEnabled {
+            let last_pos: Pos = match app.virtual_cursor {
+                Virtualcursor::NotEnabled => pos!(0, 0),
+                Virtualcursor::Position { pos } => pos,
+            };
+
             app.virtual_cursor = Virtualcursor::Position {
-                pos: pos!(0, last_pos.y),
+                pos: pos!(last_pos.x + units, last_pos.y),
             };
         }
     }
-}
 
-/// Move Cursor right (units).
-pub fn mov_cur_right(app: &mut App, units: usize) {
-    if app.virtual_cursor != Virtualcursor::NotEnabled {
-        let last_pos: Pos = match app.virtual_cursor {
-            Virtualcursor::NotEnabled => pos!(0, 0),
-            Virtualcursor::Position { pos } => pos,
-        };
-
-        app.virtual_cursor = Virtualcursor::Position {
-            pos: pos!(last_pos.x + units, last_pos.y),
-        };
-    }
-}
-
-/// Move cursor in a (direction) of (units).
-pub fn mov_cur_dir(app: &mut App, directon: Dir, units: usize) {
-    if app.virtual_cursor != Virtualcursor::NotEnabled {
-        match directon {
-            Dir::Up => mov_cur_up(app, units),
-            Dir::Down => mov_cur_down(app, units),
-            Dir::Left => mov_cur_left(app, units),
-            Dir::Right => mov_cur_right(app, units),
+    /// Move cursor in a (direction) of (units).
+    pub fn dir(self, app: &mut App, directon: Dir, units: usize) {
+        if app.virtual_cursor != Virtualcursor::NotEnabled {
+            match directon {
+                Dir::Up => self.up(app, units),
+                Dir::Down => self.down(app, units),
+                Dir::Left => self.left(app, units),
+                Dir::Right => self.right(app, units),
+            }
         }
     }
 }
