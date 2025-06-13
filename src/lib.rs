@@ -603,23 +603,6 @@ pub struct TextColorOption {
     pub vanish: bool,
 }
 
-///Custom goes from 0-255:
-/// 0-15 is standard bright colors;
-/// 16-231 is custom colors from 6 levels of reds, greens, and blues;
-/// 232-255 is a grayscale ramp, having 24 shades of gray from dark to light.
-#[derive(Clone, Copy)]
-pub enum Color {
-    Red,
-    Green,
-    Blue,
-    Yellow,
-    Magenta,
-    Cyan,
-    White,
-    Default { back: bool },
-    Custom { id: i8 },
-}
-
 impl Default for TextColorOption {
     fn default() -> Self {
         Self {
@@ -631,9 +614,38 @@ impl Default for TextColorOption {
     }
 }
 
+#[derive(Clone, Copy)]
+pub enum Color {
+    Black,
+    Red,
+    Green,
+    Yellow,
+    Blue,
+    Magenta,
+    Cyan,
+    White,
+    BrightBlack,
+    BrightRed,
+    BrightGreen,
+    BrightYellow,
+    BrightBlue,
+    BrightMagenta,
+    BrightCyan,
+    BrightWhite,
+    Default { back: bool },
+    Custom { id: i8 }, // Max is 255
+}
+
 /// Converts the Color enum into appropriate codes for fore and back grounds
 pub fn color_to_ansi_code(color: &Color, is_bg: bool) -> i8 {
     match color {
+        Color::Black => {
+            if is_bg {
+                40
+            } else {
+                30
+            }
+        }
         Color::Red => {
             if is_bg {
                 41
@@ -648,18 +660,18 @@ pub fn color_to_ansi_code(color: &Color, is_bg: bool) -> i8 {
                 32
             }
         }
-        Color::Blue => {
-            if is_bg {
-                44
-            } else {
-                34
-            }
-        }
         Color::Yellow => {
             if is_bg {
                 43
             } else {
                 33
+            }
+        }
+        Color::Blue => {
+            if is_bg {
+                44
+            } else {
+                34
             }
         }
         Color::Magenta => {
@@ -683,6 +695,64 @@ pub fn color_to_ansi_code(color: &Color, is_bg: bool) -> i8 {
                 37
             }
         }
+
+        Color::BrightBlack => {
+            if is_bg {
+                100
+            } else {
+                90
+            }
+        }
+        Color::BrightRed => {
+            if is_bg {
+                101
+            } else {
+                91
+            }
+        }
+        Color::BrightGreen => {
+            if is_bg {
+                102
+            } else {
+                92
+            }
+        }
+        Color::BrightYellow => {
+            if is_bg {
+                103
+            } else {
+                93
+            }
+        }
+        Color::BrightBlue => {
+            if is_bg {
+                104
+            } else {
+                94
+            }
+        }
+        Color::BrightMagenta => {
+            if is_bg {
+                105
+            } else {
+                95
+            }
+        }
+        Color::BrightCyan => {
+            if is_bg {
+                106
+            } else {
+                96
+            }
+        }
+        Color::BrightWhite => {
+            if is_bg {
+                107
+            } else {
+                97
+            }
+        }
+
         Color::Default { .. } => {
             if is_bg {
                 49
@@ -981,6 +1051,7 @@ pub struct Mov {
 }
 
 impl Mov {
+    /// Sets up `Mov` struct with text editor like cursor jumping, when at end of line at a false condition.
     pub fn cur() -> Self {
         Mov { wrap: false }
     }
@@ -1043,9 +1114,17 @@ impl Mov {
                 Virtualcursor::Position { pos } => pos,
             };
 
-            app.virtual_cursor = Virtualcursor::Position {
-                pos: pos!(last_pos.x + units, last_pos.y),
-            };
+            if self.wrap == true {
+                if last_pos.x < app.letter_grid[last_pos.y].len() - 2 {
+                    app.virtual_cursor = Virtualcursor::Position {
+                        pos: pos!(last_pos.x + units, last_pos.y),
+                    };
+                }
+            } else {
+                app.virtual_cursor = Virtualcursor::Position {
+                    pos: pos!(last_pos.x + units, last_pos.y),
+                };
+            }
         }
     }
 
@@ -1059,6 +1138,13 @@ impl Mov {
                 Dir::Right => self.right(app, units),
             }
         }
+    }
+
+    /// Enable text editor like wrapping.
+    /// If the cursor hits the end of the line,
+    /// it will jump to the start of the next line.
+    pub fn wrap(self) -> Self {
+        Mov { wrap: true }
     }
 }
 
