@@ -1115,10 +1115,18 @@ impl Mov {
             };
 
             if self.wrap == true {
-                if last_pos.x < app.letter_grid[last_pos.y].len() - 2 {
-                    app.virtual_cursor = Virtualcursor::Position {
-                        pos: pos!(last_pos.x + units, last_pos.y),
-                    };
+                // not at end of line chec
+                if app.letter_grid[last_pos.y].len() > 2 {
+                    if last_pos.x < app.letter_grid[last_pos.y].len() - 2 {
+                        app.virtual_cursor = Virtualcursor::Position {
+                            pos: pos!(last_pos.x + units, last_pos.y),
+                        };
+                    // reached end of line
+                    } else {
+                        app.virtual_cursor = Virtualcursor::Position {
+                            pos: pos!(0, last_pos.y + 1),
+                        };
+                    }
                 }
             } else {
                 app.virtual_cursor = Virtualcursor::Position {
