@@ -507,12 +507,16 @@ pub fn key_press_not_case_sen(app: &App, key: &str) -> bool {
 /// Used for ideomatics.
 pub struct Key {
     pub case_sen: bool,
+    pub clear_non_lead_text: bool,
 }
 
 impl Key {
     /// Required to default optional functional para for case sensitivity, without an extra bool para in pressed.
     pub fn o() -> Self {
-        Key { case_sen: false }
+        Key {
+            case_sen: false,
+            clear_non_lead_text: true,
+        }
     }
 
     /// in order to use you must `collect_presses()`, before calling this method
@@ -523,14 +527,18 @@ impl Key {
     pub fn pressed(self, app: &mut App, key: &str) -> bool {
         if self.case_sen == true {
             if app.keypressed.eq_ignore_ascii_case(key) {
-                clear_nonlead(app);
+                if self.clear_non_lead_text == true {
+                    clear_nonlead(app);
+                }
                 true
             } else {
                 false
             }
         } else {
             if app.keypressed == key.to_string() {
-                clear_nonlead(app);
+                if self.clear_non_lead_text == true {
+                    clear_nonlead(app);
+                }
                 true
             } else {
                 false
@@ -540,7 +548,19 @@ impl Key {
 
     /// Toggle the case sensitive optional functional para.
     pub fn case_sen(self, on: bool) -> Self {
-        Key { case_sen: on }
+        Key {
+            case_sen: on,
+            clear_non_lead_text: self.clear_non_lead_text,
+        }
+    }
+
+    /// Toggle the clearing of so called non-lead text or vanishing text,
+    /// which are texts specifed to be only shown under certain keys.
+    pub fn no_clear(self) -> Self {
+        Key {
+            case_sen: self.case_sen,
+            clear_non_lead_text: false,
+        }
     }
 }
 
@@ -552,6 +572,7 @@ pub fn clear_nonlead(app: &mut App) {
                 != (LeadOnly::ShownLead {
                     key: app.keypressed.clone(),
                 })
+                && app.letter_grid[row][col].when != LeadOnly::AlwaysShown
             {
                 app.letter_grid[row][col] = Letter {
                     ch: ' ',
@@ -737,8 +758,7 @@ impl Text {
                 fg_code,
                 bg_code,
                 style: style_code,
-                //when: when.clone(),
-                when: LeadOnly::AlwaysShown,
+                when: when.clone(),
             };
         }
     }
