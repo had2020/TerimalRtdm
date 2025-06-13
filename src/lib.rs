@@ -34,7 +34,7 @@ pub struct VirtualCursorTheme {
 }
 
 /// Controls if the text should be shown under another if outside the closure.
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum LeadOnly {
     ShownLead { key: String },
     AlwaysShown,
@@ -579,6 +579,7 @@ pub struct TextColorOption {
     pub fore: Color,
     pub back: Color,
     pub style: Style,
+    pub vanish: bool,
 }
 
 ///Custom goes from 0-255:
@@ -604,6 +605,7 @@ impl Default for TextColorOption {
             fore: Color::White,
             back: Color::Default { back: true },
             style: Style::Reset,
+            vanish: true,
         }
     }
 }
@@ -721,16 +723,23 @@ impl Text {
             Style::Underline => 4,
         };
 
+        let when = if self.settings.vanish == true {
+            LeadOnly::ShownLead {
+                key: app.keypressed.to_string(),
+            }
+        } else {
+            LeadOnly::AlwaysShown
+        };
+
         for (i, ch) in text.chars().enumerate() {
-            app.letter_grid[pos.y][pos.x + i] = (Letter {
-                ch: ch,
-                fg_code: fg_code,
-                bg_code: bg_code,
+            app.letter_grid[pos.y][pos.x + i] = Letter {
+                ch,
+                fg_code,
+                bg_code,
                 style: style_code,
-                when: LeadOnly::ShownLead {
-                    key: app.keypressed.to_string(),
-                },
-            });
+                //when: when.clone(),
+                when: LeadOnly::AlwaysShown,
+            };
         }
     }
 
@@ -748,6 +757,17 @@ impl Text {
 
     pub fn style(mut self, style: Style) -> Self {
         self.settings.style = style;
+        self
+    }
+
+    /// By default text will vanish that are under other inputs to prevent overlap.
+    /// Set as false to keep your text safe!
+    pub fn vanish(mut self, vanish: bool) -> Self {
+        if vanish {
+            self.settings.vanish = true;
+        } else {
+            self.settings.vanish = false;
+        }
         self
     }
 }
@@ -1003,4 +1023,17 @@ pub fn mov_cur_dir(app: &mut App, directon: Dir, units: usize) {
             Dir::Right => mov_cur_right(app, units),
         }
     }
+}
+
+/// Returns Pos (Position) of the virtual cursor.
+pub fn get_cur_pos(app: &mut App) -> Pos {
+    match app.virtual_cursor {
+        Virtualcursor::NotEnabled => pos!(0, 0),
+        Virtualcursor::Position { pos } => pos,
+    }
+}
+
+/// Returns the key which is pressed under this iteration.
+pub fn key_pressed(app: &App) -> String {
+    app.keypressed.clone()
 }
