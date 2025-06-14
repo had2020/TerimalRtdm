@@ -1170,3 +1170,27 @@ pub fn get_cur_pos(app: &mut App) -> Pos {
 pub fn key_pressed(app: &App) -> String {
     app.keypressed.clone()
 }
+
+pub fn px(ch: char, foreground_code: i8, background_code: i8) -> Letter {
+    Letter {
+        ch: ch,
+        fg_code: foreground_code,
+        bg_code: background_code,
+        style: 0,
+        when: LeadOnly::AlwaysShown,
+    }
+}
+
+pub struct Keyframe {
+    pub render_map: Vec<Vec<Letter>>,
+}
+
+pub struct Animation {
+    pub duration: usize,
+    pub timestep: usize,
+    pub keyframes: Vec<Keyframe>,
+}
+
+impl Animation {
+    pub fn set_frame() -> {}
+}
