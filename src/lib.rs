@@ -139,13 +139,6 @@ pub fn halt_press_check(app: &mut App, key: &str) -> bool {
     pressed
 }
 
-/// DEPRECATED! use Pos
-#[deprecated(note = "Use `Pos` instead. This will be removed in version 0.0.5.")]
-pub struct Position {
-    pub x: usize,
-    pub y: usize,
-}
-
 /// For idiomatically storing postion vector
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Pos {
@@ -153,35 +146,11 @@ pub struct Pos {
     pub y: usize,
 }
 
-/// DEPRECATED! use Pos Marco
-#[deprecated(note = "Use `pos!()` instead. This will be removed in version 0.0.5.")]
-#[macro_export]
-macro_rules! position {
-    ($x:expr, $y:expr) => {
-        Position { x: $x, y: $y }
-    };
-}
-
 #[macro_export]
 macro_rules! pos {
     ($x:expr, $y:expr) => {
         Pos { x: $x, y: $y }
     };
-}
-
-/// DEPRECATED! use enum "color", this will still work for the old "line" method
-#[deprecated(note = "Use `color` instead. This will be removed in version 0.0.5.")]
-pub fn color_code(color: &str) -> &'static str {
-    match color {
-        "red" => "\x1B[31m",
-        "green" => "\x1B[32m",
-        "yellow" => "\x1B[33m",
-        "blue" => "\x1B[34m",
-        "magenta" => "\x1B[35m",
-        "cyan" => "\x1B[36m",
-        "white" => "\x1B[37m",
-        _ => "\x1B[0m", // incorrect name
-    }
 }
 
 /// Returns the code of a extra key that is pressed.
@@ -194,12 +163,14 @@ pub fn debug_code_pressed(app: &mut App) -> u8 {
     app.key_buffer[0]
 }
 
-pub fn find_key_pressed_f_row_and_arrow(app: &mut App) -> &'static str {
+pub fn find_key_pressed_f_row_and_arrow(app: &App) -> &'static str {
     let mut key_buffer = [0u8; 3];
     let mut total_read = 0;
     let stdin = io::stdin();
 
-    let read_now = stdin.lock().read(&mut key_buffer[total_read..]).unwrap();
+    //let read_now = stdin.lock().read(&mut key_buffer[total_read..]).unwrap();
+    //let read_now = app.key_buffer.clone();
+
     total_read += read_now;
 
     if key_buffer[..total_read] == [27] {
@@ -482,25 +453,6 @@ pub fn collect_presses(app: &mut App) {
         app.keypressed = find_key_pressed_f_row_and_arrow(app).to_string();
     } else {
         app.keypressed = find_key_pressed_no_special(app).to_string();
-    }
-}
-
-#[deprecated(note = "Use `Pressed` instead. This will be removed in version 0.0.5.")]
-pub fn key_press(app: &App, key: &str) -> bool {
-    if app.keypressed == key.to_string() {
-        true
-    } else {
-        false
-    }
-}
-
-/// Same as key_press() method, but is not case sensitive.
-#[deprecated(note = "Use `Pressed_letter` instead. This will be removed in version 0.0.5.")]
-pub fn key_press_not_case_sen(app: &App, key: &str) -> bool {
-    if app.keypressed.eq_ignore_ascii_case(key) {
-        true
-    } else {
-        false
     }
 }
 
@@ -864,23 +816,6 @@ impl Text {
         }
         self
     }
-}
-
-/// DEPRECATED! Use Text struct with set impl
-/// Used to make a text appear, a a position,
-/// each position being a different sectioned &str on screen.
-/// Usage
-///line(Position { x: 0, y: 5 }, "First", "blue");
-///line(Position { x: 0, y: 11 }, "Sec", "red");
-#[deprecated(note = "Use `Text::show()` instead. This will be removed in version 0.0.5.")]
-pub fn line(position: Position, text: &str, color: &str) {
-    let x = position.x;
-    let y = position.y;
-    let letter = text;
-    let color_code = color_code(color);
-    let reset_code = "\x1B[0m";
-    print!("\x1B[{};{}H{}{}{}", x, y, color_code, letter, reset_code);
-    io::stdout().flush().unwrap();
 }
 
 /// Toggle line wrapping in the terimal.
