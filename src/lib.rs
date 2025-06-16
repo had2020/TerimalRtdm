@@ -1171,7 +1171,13 @@ pub fn key_pressed(app: &App) -> String {
     app.keypressed.clone()
 }
 
-pub fn px(ch: char, foreground_code: i8, background_code: i8) -> Letter {
+pub struct Px {
+    ch: char,
+    fg: i8,
+    bg: i8,
+}
+
+pub fn px_to_letter(ch: char, foreground_code: i8, background_code: i8) -> Letter {
     Letter {
         ch: ch,
         fg_code: foreground_code,
@@ -1186,11 +1192,16 @@ pub struct Keyframe {
 }
 
 pub struct Animation {
-    pub duration: usize,
+    pub step_duration: usize,
     pub timestep: usize,
+    pub size: Pos,
     pub keyframes: Vec<Keyframe>,
 }
 
 impl Animation {
-    pub fn set_frame() -> {}
+    pub fn new(step_duration: usize, size: Pos) -> Animation {
+        Animation { step_duration: step_duration, timestep: 0, size: size, keyframes: vec![] }
+    }
+
+    pub fn set_frame(map: Vec<Vec<Px>>) -> {}
 }
