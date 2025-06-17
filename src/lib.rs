@@ -122,7 +122,7 @@ pub fn halt_press_check(app: &mut App, key: &str) -> bool {
     let pressed_key: String;
 
     if app.enable_f_row_and_arrow == true {
-        pressed_key = find_key_pressed_f_row_and_arrow(app).to_string();
+        pressed_key = find_key_pressed_f_row_and_arrow(/*app*/).to_string();
     } else {
         pressed_key = find_key_pressed_no_special(app).to_string();
     }
@@ -163,13 +163,12 @@ pub fn debug_code_pressed(app: &mut App) -> u8 {
     app.key_buffer[0]
 }
 
-pub fn find_key_pressed_f_row_and_arrow(app: &App) -> &'static str {
+pub fn find_key_pressed_f_row_and_arrow(/*app: &App*/) -> &'static str {
     let mut key_buffer = [0u8; 3];
     let mut total_read = 0;
     let stdin = io::stdin();
 
-    //let read_now = stdin.lock().read(&mut key_buffer[total_read..]).unwrap();
-    //let read_now = app.key_buffer.clone();
+    let read_now = stdin.lock().read(&mut key_buffer[total_read..]).unwrap();
 
     total_read += read_now;
 
@@ -450,7 +449,7 @@ pub fn find_key_pressed_no_special(app: &mut App) -> &'static str {
 /// Set app.enable_f_row_and_arrow = true, if you wish for all function keys.
 pub fn collect_presses(app: &mut App) {
     if app.enable_f_row_and_arrow == true {
-        app.keypressed = find_key_pressed_f_row_and_arrow(app).to_string();
+        app.keypressed = find_key_pressed_f_row_and_arrow(/*app*/).to_string();
     } else {
         app.keypressed = find_key_pressed_no_special(app).to_string();
     }
@@ -1135,8 +1134,15 @@ pub struct Animation {
 
 impl Animation {
     pub fn new(step_duration: usize, size: Pos) -> Animation {
-        Animation { step_duration: step_duration, timestep: 0, size: size, keyframes: vec![] }
+        Animation {
+            step_duration: step_duration,
+            timestep: 0,
+            size: size,
+            keyframes: vec![],
+        }
     }
 
-    pub fn set_frame(map: Vec<Vec<Px>>) -> {}
+    pub fn set_frame(map: Vec<Vec<Px>>) {
+        println!("dd");
+    }
 }
