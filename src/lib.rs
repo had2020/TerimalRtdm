@@ -1105,6 +1105,7 @@ pub fn key_pressed(app: &App) -> String {
     app.keypressed.clone()
 }
 
+/*
 pub struct Px {
     ch: char,
     fg: i8,
@@ -1146,3 +1147,4 @@ impl Animation {
         println!("dd");
     }
 }
+*/
