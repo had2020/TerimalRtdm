@@ -163,6 +163,126 @@ pub fn debug_code_pressed(app: &mut App) -> u8 {
     app.key_buffer[0]
 }
 
+/// Refer to this enum for keys working under `pressed()` method.
+#[allow(non_camel_case_types)]
+pub enum KeyType {
+    // Escape Keys
+    Esc,
+    // Note: F row requires
+    // Set app.enable_f_row_and_arrow = true, if you wish for all function keys.
+    // This will come at the cost of halting till Esc is presed three times.
+    F1,
+    F2,
+    F3,
+    F4,
+    F5,
+    F6,
+    F7,
+    F8,
+    F9,
+    F10,
+    F11,
+    F12,
+
+    // Arrow Keys
+    UpArrow,
+    DownArrow,
+    RightArrow,
+    LeftArrow,
+
+    // Letter Keys
+    a,
+    A,
+    b,
+    B,
+    c,
+    C,
+    d,
+    D,
+    e,
+    E,
+    f,
+    F,
+    g,
+    G,
+    h,
+    H,
+    i,
+    I,
+    j,
+    J,
+    k,
+    K,
+    l,
+    L,
+    m,
+    M,
+    n,
+    N,
+    o,
+    O,
+    p,
+    P,
+    q,
+    Q,
+    r,
+    R,
+    s,
+    S,
+    t,
+    T,
+    u,
+    U,
+    v,
+    V,
+    w,
+    W,
+    x,
+    X,
+    y,
+    Y,
+    z,
+    Z,
+
+    // Special characters
+    Space,
+    Tab,
+    Enter,
+    Backspace,
+    ExclamationMark, // !
+    Quote,           // "
+    Hash,            // #
+    Dollar,          // $
+    Percent,         // %
+    Ampersand,       // &
+    Apostrophe,      // '
+    LeftParen,       // (
+    RightParen,      // )
+    Asterisk,        // *
+    Plus,            // +
+    Comma,           // ,
+    Minus,           // -
+    Dot,             // .
+    Slash,           // /
+    Colon,           // :
+    Semicolon,       // ;
+    LessThan,        // <
+    Equal,           // =
+    GreaterThan,     // >
+    QuestionMark,    // ?
+    At,              // @
+    LeftBracket,     // [
+    Backslash,       // \
+    RightBracket,    // ]
+    Caret,           // ^
+    Underscore,      // _
+    Backtick,        // `
+    LeftBrace,       // {
+    Pipe,            // |
+    RightBrace,      // }
+    Tilde,           // ~
+}
+
 pub fn find_key_pressed_f_row_and_arrow(/*app: &App*/) -> &'static str {
     let mut key_buffer = [0u8; 3];
     let mut total_read = 0;
