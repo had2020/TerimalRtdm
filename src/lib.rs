@@ -628,9 +628,10 @@ impl Key {
     }
 
     /// Toggle the case sensitive optional functional para.
-    pub fn case_sen(self, on: bool) -> Self {
+    /// On by default.
+    pub fn case_sen(self, state: bool) -> Self {
         Key {
-            case_sen: on,
+            case_sen: state,
             clear_non_lead_text: self.clear_non_lead_text,
         }
     }
