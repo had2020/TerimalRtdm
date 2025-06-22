@@ -338,6 +338,10 @@ pub fn find_key_pressed_f_row_and_arrow(/*app: &App*/) -> KeyType {
         [27, 91, 50, 49, 126] => KeyType::F10,
         [27, 91, 50, 51, 126] => KeyType::F11,
         [27, 91, 50, 52, 126] => KeyType::F12,
+        [27, 91, 65] => KeyType::UpArrow,
+        [27, 91, 66] => KeyType::DownArrow,
+        [27, 91, 67] => KeyType::LeftArrow,
+        [27, 91, 68] => KeyType::RightArrow,
 
         // escape sequences
         [27, 27, 27] => KeyType::Esc, // Note: you have to press esc threee times, due to design.
