@@ -1,16 +1,13 @@
 ## TerimalRtdm
-Lightwight, Simple, Easy to read, Ideomatic Rust Terimal Interface Library for CUIs
+Zero-dependencies, Easy to read, Ideomatic Rust Terimal Interface Library for quick CUIs
 
 ![MSRV](https://img.shields.io/badge/Rust%20MSRV-1.78.0-brightgreen)
 [![crates.io](https://img.shields.io/crates/v/TerimalRtdm.svg)](https://crates.io/crates/TerimalRtdm/0.0.2)
 [![Downloads](https://img.shields.io/crates/d/TerimalRtdm.svg)](https://crates.io/crates/TerimalRtdm)
 
-## ⭐️ Show support by leaving a star. Check out Github for up to date docs
-https://github.com/had2020/TerimalRtdm 
-
-## 👉 Why use it 
-This framework provides many usful functions that abstract ACSI escape keys,
-allowing for easy implementation for a Terimal Interface. 
+## 👉 Why use it
+This framework provides many useful functions that abstract ACSI escape keys,
+allowing for easy implementation for a Terimal Interface.
 
 - 🔢 Many features like key_press(), allows you to check a key without halting for a check.
 - ⏱️ You can write Terimal GUIs much faster!
@@ -49,7 +46,7 @@ loop {
 raw_mode(false); // disable to release the user terimal
 ```
 
-## 🧮 Core functions 
+## 🧮 Core functions
 App Struct
 
 - Used to automatically hold variables outside the app loop.
@@ -66,7 +63,7 @@ clear()
 clear();
 ```
 
-cursor_state() 
+cursor_state()
 
 - Used to toggle on and off the Cursor
 ``` Rust
@@ -100,7 +97,7 @@ if halt_press_check(&mut app, "q") {
 }
 ```
 
-Position Struct 
+Position Struct
 
 - Used as argument in many functions.
 - Holds x and y position in the Terimal.
@@ -111,7 +108,7 @@ Position Struct
 position!(0, 0)
 ```
 
-collect_presses() 
+collect_presses()
 
 - collects the current press in a single halt, and stores it in App variable.
 - Later inout statements refer to this value, to prevent unneeded halts, within the main loop for app.
@@ -153,9 +150,9 @@ if key_press(&app, "Q") { // checks the stored current key, if it's "q" or "Q"
 | yellow   | `\x1B[33m`  | 🟨    |
 | blue     | `\x1B[34m`  | 🟦    |
 | magenta  | `\x1B[35m`  | 🟪    |
-| cyan     | `\x1B[36m`  | 🟦    |  
+| cyan     | `\x1B[36m`  | 🟦    |
 | white    | `\x1B[37m`  | ⬜️    |
-| _ (fallback default) | `\x1B[0m`  | ⬛️    | 
+| _ (fallback default) | `\x1B[0m`  | ⬛️    |
 
 ## ⌨️ Key Map
 
@@ -163,19 +160,23 @@ Most are directly named, `q` is `q`, and `Q` is `Q`
 
 - Refer to `find_key_pressed()`, for more keys.
 
-## 🏛️ Structure 
+## 🏛️ Structure
 
 1. clear, old text < optional `clear()`
 2. setup app struct with new() `let mut app = App::new();`
 3. Tip: this is a good place for raw lines to display exits or shortcut keys
-4. set raw mode to true, with raw_mode() `raw_mode(true);` 
-5. `loop {}` - loops for each new input 
+4. set raw mode to true, with raw_mode() `raw_mode(true);`
+5. `loop {}` - loops for each new input
 6. Inside clear, for old text < optional `clear()`
 7. collect_presses(), to store the current key pressed in app `collect_presses(&mut app);`
 8. any if statements, like key_press() and code process `if key_press(&app, "w")`
 9. Outside the loop
 10. set raw mode to false, for exiting the app `raw_mode(false);`
 
+
+## ⭐️ Show support by leaving a star. Check out Github for up to date docs
+
+[![GitHub](https://img.shields.io/badge/github-had2020%2FTerimalRtdm-blue?logo=github)](https://github.com/had2020/TerimalRtdm)
 
 ## 👉 Major Usage in another projects!
 
@@ -184,4 +185,3 @@ https://github.com/had2020/Runo
 
 - For a terimal based web browser.
 https://github.com/had2020/RusosBr
-
