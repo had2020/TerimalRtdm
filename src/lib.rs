@@ -58,7 +58,7 @@ pub struct LeadkeySequence {
 /// Global app memory access point, where program data is stored, for various perposes.
 pub struct App {
     pub key_buffer: [u8; 3],
-    pub keypressed: String,
+    pub keypressed: KeyType,
     pub enable_f_row_and_arrow: bool,
     pub unknown_not_asci_code: bool,
     pub virtual_cursor: Virtualcursor,
@@ -70,7 +70,7 @@ impl App {
     pub fn new() -> Self {
         App {
             key_buffer: [0; 3],
-            keypressed: String::new(),
+            keypressed: KeyType::Unknown,
             enable_f_row_and_arrow: false,
             unknown_not_asci_code: false,
             virtual_cursor: Virtualcursor::Position { pos: pos!(0, 0) },
@@ -113,23 +113,23 @@ pub fn raw_line(message: &str) {
 
 /// mainly not used, holds program till key press and does not save for other if statements
 /// Usage
-//`if halt_press_check(&mut app, "q") {
+//`if halt_press_check(&mut app, KeyType::q) {
 ///    clear();
 ///    break;
 ///}`
-pub fn halt_press_check(app: &mut App, key: &str) -> bool {
+pub fn halt_press_check(app: &mut App, key: KeyType) -> bool {
     let pressed: bool;
-    let pressed_key: String;
+    let pressed_key: KeyType;
 
     if app.enable_f_row_and_arrow == true {
-        pressed_key = variant_name(&find_key_pressed_f_row_and_arrow(/*app*/)).to_string();
+        pressed_key = find_key_pressed_f_row_and_arrow(/*app*/);
     } else {
-        pressed_key = variant_name(&find_key_pressed_no_special(app)).to_string();
+        pressed_key = find_key_pressed_no_special(app);
     }
 
     if pressed_key == key {
         pressed = true;
-    } else if pressed_key == "unknown" {
+    } else if pressed_key == KeyType::Unknown {
         pressed = false;
     } else {
         pressed = false;
@@ -164,6 +164,7 @@ pub fn debug_code_pressed(app: &mut App) -> u8 {
 }
 
 /// Refer to this enum for keys working under `pressed()` method.
+#[derive(Debug, Clone, PartialEq)]
 #[allow(non_camel_case_types)]
 pub enum KeyType {
     // Escape Keys
@@ -294,7 +295,8 @@ pub enum KeyType {
     RightBrace,      // }
     Tilde,           // ~
 
-    Unknown,
+    Unknown, // Missing key on the framework end.
+    Null, // A null key press in the app variable means the collect_presses method as not been called.
 }
 
 pub fn find_key_pressed_f_row_and_arrow(/*app: &App*/) -> KeyType {
@@ -581,9 +583,9 @@ fn variant_name<T>(_: &T) -> &'static str {
 /// Set app.enable_f_row_and_arrow = true, if you wish for all function keys.
 pub fn collect_presses(app: &mut App) {
     if app.enable_f_row_and_arrow == true {
-        app.keypressed = variant_name(&find_key_pressed_f_row_and_arrow(/*app*/)).to_string();
+        app.keypressed = find_key_pressed_f_row_and_arrow(/*app*/);
     } else {
-        app.keypressed = variant_name(&find_key_pressed_no_special(app)).to_string();
+        app.keypressed = find_key_pressed_no_special(app);
     }
 }
 
@@ -607,9 +609,9 @@ impl Key {
     /// This is the main way to check for input.
     /// to collect full input for typing you will need to make a loop within the loop.
     /// otherwise everyother key will be missing from `collect_presses()` method.
-    pub fn pressed(self, app: &mut App, key: &str) -> bool {
+    pub fn pressed(self, app: &mut App, key: KeyType) -> bool {
         if self.case_sen == true {
-            if app.keypressed.eq_ignore_ascii_case(key) {
+            if variant_name(&app.keypressed).eq_ignore_ascii_case(variant_name(&key)) {
                 if self.clear_non_lead_text == true {
                     clear_nonlead(app);
                 }
@@ -618,7 +620,7 @@ impl Key {
                 false
             }
         } else {
-            if app.keypressed == key.to_string() {
+            if app.keypressed == key {
                 if self.clear_non_lead_text == true {
                     clear_nonlead(app);
                 }
@@ -653,7 +655,7 @@ pub fn clear_nonlead(app: &mut App) {
         for col in 0..app.letter_grid[row].len() {
             if app.letter_grid[row][col].when
                 != (LeadOnly::ShownLead {
-                    key: app.keypressed.clone(),
+                    key: variant_name(&app.keypressed.clone()).to_string(),
                 })
                 && app.letter_grid[row][col].when != LeadOnly::AlwaysShown
             {
@@ -903,7 +905,7 @@ impl Text {
 
         let when = if self.settings.vanish == true {
             LeadOnly::ShownLead {
-                key: app.keypressed.to_string(),
+                key: variant_name(&app.keypressed).to_string(),
             }
         } else {
             LeadOnly::AlwaysShown
@@ -1234,7 +1236,7 @@ pub fn get_cur_pos(app: &mut App) -> Pos {
 
 /// Returns the key which is pressed under this iteration.
 pub fn key_pressed(app: &App) -> String {
-    app.keypressed.clone()
+    variant_name(&app.keypressed).to_string()
 }
 
 /*
