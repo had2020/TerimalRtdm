@@ -122,9 +122,9 @@ pub fn halt_press_check(app: &mut App, key: &str) -> bool {
     let pressed_key: String;
 
     if app.enable_f_row_and_arrow == true {
-        pressed_key = find_key_pressed_f_row_and_arrow(/*app*/).to_string();
+        pressed_key = variant_name(&find_key_pressed_f_row_and_arrow(/*app*/)).to_string();
     } else {
-        pressed_key = find_key_pressed_no_special(app).to_string();
+        pressed_key = variant_name(&find_key_pressed_no_special(app)).to_string();
     }
 
     if pressed_key == key {
@@ -573,13 +573,17 @@ pub fn find_key_pressed_no_special(app: &mut App) -> KeyType {
     pressed_key
 }
 
+fn variant_name<T>(_: &T) -> &'static str {
+    std::any::type_name::<T>().rsplit("::").next().unwrap()
+}
+
 /// will still halt but collect one input for the whole loop, each loop being for one input
 /// Set app.enable_f_row_and_arrow = true, if you wish for all function keys.
 pub fn collect_presses(app: &mut App) {
     if app.enable_f_row_and_arrow == true {
-        app.keypressed = find_key_pressed_f_row_and_arrow(/*app*/).to_string();
+        app.keypressed = variant_name(&find_key_pressed_f_row_and_arrow(/*app*/)).to_string();
     } else {
-        app.keypressed = find_key_pressed_no_special(app).to_string();
+        app.keypressed = variant_name(&find_key_pressed_no_special(app)).to_string();
     }
 }
 
