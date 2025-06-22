@@ -575,10 +575,6 @@ pub fn find_key_pressed_no_special(app: &mut App) -> KeyType {
     pressed_key
 }
 
-fn variant_name<T>(_: &T) -> &'static str {
-    std::any::type_name::<T>().rsplit("::").next().unwrap()
-}
-
 /// will still halt but collect one input for the whole loop, each loop being for one input
 /// Set app.enable_f_row_and_arrow = true, if you wish for all function keys.
 pub fn collect_presses(app: &mut App) {
@@ -611,7 +607,7 @@ impl Key {
     /// otherwise everyother key will be missing from `collect_presses()` method.
     pub fn pressed(self, app: &mut App, key: KeyType) -> bool {
         if self.case_sen == true {
-            if variant_name(&app.keypressed).eq_ignore_ascii_case(variant_name(&key)) {
+            if format!("{:?}", app.keypressed).eq_ignore_ascii_case(&format!("{:?}", key)) {
                 if self.clear_non_lead_text == true {
                     clear_nonlead(app);
                 }
@@ -655,7 +651,7 @@ pub fn clear_nonlead(app: &mut App) {
         for col in 0..app.letter_grid[row].len() {
             if app.letter_grid[row][col].when
                 != (LeadOnly::ShownLead {
-                    key: variant_name(&app.keypressed.clone()).to_string(),
+                    key: format!("{:?}", &app.keypressed.clone()),
                 })
                 && app.letter_grid[row][col].when != LeadOnly::AlwaysShown
             {
@@ -905,7 +901,7 @@ impl Text {
 
         let when = if self.settings.vanish == true {
             LeadOnly::ShownLead {
-                key: variant_name(&app.keypressed).to_string(),
+                key: format!("{:?}", app.keypressed),
             }
         } else {
             LeadOnly::AlwaysShown
@@ -1236,7 +1232,7 @@ pub fn get_cur_pos(app: &mut App) -> Pos {
 
 /// Returns the key which is pressed under this iteration.
 pub fn key_pressed(app: &App) -> String {
-    variant_name(&app.keypressed).to_string()
+    format!("{:?}", &app.keypressed)
 }
 
 /*
