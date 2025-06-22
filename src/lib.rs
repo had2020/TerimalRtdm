@@ -244,7 +244,7 @@ pub enum KeyType {
     z,
     Z,
 
-    // numbers
+    // Numbers
     Zero,
     One,
     Two,
