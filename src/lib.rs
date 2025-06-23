@@ -1142,10 +1142,12 @@ impl Mov {
                 Virtualcursor::Position { pos } => pos,
             };
 
-            if last_pos.y != 0 {
-                app.virtual_cursor = Virtualcursor::Position {
-                    pos: pos!(last_pos.x, last_pos.y - units),
-                };
+            if app.letter_grid.len() > 0 {
+                if last_pos.y != 0 {
+                    app.virtual_cursor = Virtualcursor::Position {
+                        pos: pos!(last_pos.x, last_pos.y - units),
+                    };
+                }
             }
         }
     }
@@ -1158,11 +1160,12 @@ impl Mov {
                 Virtualcursor::Position { pos } => pos,
             };
 
-            //TODO wrap
-            if app.letter_grid[last_pos.y].len() > last_pos.y {
-                app.virtual_cursor = Virtualcursor::Position {
-                    pos: pos!(last_pos.x, last_pos.y + units),
-                };
+            if app.letter_grid.len() > 0 {
+                if app.letter_grid[last_pos.y].len() > last_pos.y {
+                    app.virtual_cursor = Virtualcursor::Position {
+                        pos: pos!(last_pos.x, last_pos.y + units),
+                    };
+                }
             }
         }
     }
@@ -1175,14 +1178,28 @@ impl Mov {
                 Virtualcursor::Position { pos } => pos,
             };
 
-            if last_pos.x > 0 {
-                app.virtual_cursor = Virtualcursor::Position {
-                    pos: pos!(last_pos.x - units, last_pos.y),
-                };
-            } else {
-                app.virtual_cursor = Virtualcursor::Position {
-                    pos: pos!(0, last_pos.y),
-                };
+            if app.letter_grid.len() > 0 {
+                if self.cursor_movement_bound_type == CurMovType::Wrap {
+                    if last_pos.x > 0 {
+                        app.virtual_cursor = Virtualcursor::Position {
+                            pos: pos!(last_pos.x - units, last_pos.y),
+                        };
+                    } else if last_pos.y != 0 {
+                        app.virtual_cursor = Virtualcursor::Position {
+                            pos: pos!(0, last_pos.y - 1),
+                        };
+                    }
+                } else if self.cursor_movement_bound_type == CurMovType::Block {
+                    if last_pos.y > 0 {
+                        app.virtual_cursor = Virtualcursor::Position {
+                            pos: pos!(0, last_pos.y),
+                        };
+                    }
+                } else {
+                    app.virtual_cursor = Virtualcursor::Position {
+                        pos: pos!(0, last_pos.y),
+                    };
+                }
             }
         }
     }
@@ -1195,32 +1212,34 @@ impl Mov {
                 Virtualcursor::Position { pos } => pos,
             };
 
-            if self.cursor_movement_bound_type == CurMovType::Wrap {
-                // not at end of line check
-                if app.letter_grid[last_pos.y].len() > 2 {
-                    if last_pos.x < app.letter_grid[last_pos.y].len() - 2 {
-                        app.virtual_cursor = Virtualcursor::Position {
-                            pos: pos!(last_pos.x + units, last_pos.y),
-                        };
-                    // reached end of line
-                    } else {
-                        app.virtual_cursor = Virtualcursor::Position {
-                            pos: pos!(0, last_pos.y + 1),
-                        };
+            if app.letter_grid.len() > 0 {
+                if self.cursor_movement_bound_type == CurMovType::Wrap {
+                    // not at end of line check
+                    if app.letter_grid[last_pos.y].len() > 2 {
+                        if last_pos.x < app.letter_grid[last_pos.y].len() - 2 {
+                            app.virtual_cursor = Virtualcursor::Position {
+                                pos: pos!(last_pos.x + units, last_pos.y),
+                            };
+                        // reached end of line
+                        } else {
+                            app.virtual_cursor = Virtualcursor::Position {
+                                pos: pos!(0, last_pos.y + 1),
+                            };
+                        }
                     }
-                }
-            } else if self.cursor_movement_bound_type == CurMovType::Block {
-                if app.letter_grid[last_pos.y].len() > 2 {
-                    if last_pos.x < app.letter_grid[last_pos.y].len() - 2 {
-                        app.virtual_cursor = Virtualcursor::Position {
-                            pos: pos!(last_pos.x + units, last_pos.y),
-                        };
+                } else if self.cursor_movement_bound_type == CurMovType::Block {
+                    if app.letter_grid[last_pos.y].len() > 2 {
+                        if last_pos.x < app.letter_grid[last_pos.y].len() - 2 {
+                            app.virtual_cursor = Virtualcursor::Position {
+                                pos: pos!(last_pos.x + units, last_pos.y),
+                            };
+                        }
                     }
+                } else {
+                    app.virtual_cursor = Virtualcursor::Position {
+                        pos: pos!(last_pos.x + units, last_pos.y),
+                    };
                 }
-            } else {
-                app.virtual_cursor = Virtualcursor::Position {
-                    pos: pos!(last_pos.x + units, last_pos.y),
-                };
             }
         }
     }
