@@ -340,8 +340,8 @@ pub fn find_key_pressed_f_row_and_arrow(/*app: &App*/) -> KeyType {
         [27, 91, 50, 52, 126] => KeyType::F12,
         [27, 91, 65] => KeyType::UpArrow,
         [27, 91, 66] => KeyType::DownArrow,
-        [27, 91, 67] => KeyType::LeftArrow,
-        [27, 91, 68] => KeyType::RightArrow,
+        [27, 91, 67] => KeyType::RightArrow,
+        [27, 91, 68] => KeyType::LeftArrow,
 
         // escape sequences
         [27, 27, 27] => KeyType::Esc, // Note: you have to press esc threee times, due to design.
@@ -1112,17 +1112,26 @@ pub enum Dir {
     Right,
 }
 
+#[derive(PartialEq)]
+pub enum CurMovType {
+    Wrap,
+    Freefloat,
+    Block,
+}
+
 /// Quick reminder: this is not an assembly instruction!
 /// This a optinal setting shared by the cursor move pattern of functions.
 /// Therefore it's a trait of this class, with implications of methods to move the curosr.
 pub struct Mov {
-    pub wrap: bool, // Warpping such as when you try to move the carvet off a line.
+    pub cursor_movement_bound_type: CurMovType, // Warpping such as when you try to move the carvet off a line.
 }
 
 impl Mov {
     /// Sets up `Mov` struct with text editor like cursor jumping, when at end of line at a false condition.
     pub fn cur() -> Self {
-        Mov { wrap: false }
+        Mov {
+            cursor_movement_bound_type: CurMovType::Wrap,
+        }
     }
 
     /// Move Cursor up (units).
@@ -1149,6 +1158,7 @@ impl Mov {
                 Virtualcursor::Position { pos } => pos,
             };
 
+            //TODO wrap
             if app.letter_grid[last_pos.y].len() > last_pos.y {
                 app.virtual_cursor = Virtualcursor::Position {
                     pos: pos!(last_pos.x, last_pos.y + units),
@@ -1185,8 +1195,8 @@ impl Mov {
                 Virtualcursor::Position { pos } => pos,
             };
 
-            if self.wrap == true {
-                // not at end of line chec
+            if self.cursor_movement_bound_type == CurMovType::Wrap {
+                // not at end of line check
                 if app.letter_grid[last_pos.y].len() > 2 {
                     if last_pos.x < app.letter_grid[last_pos.y].len() - 2 {
                         app.virtual_cursor = Virtualcursor::Position {
@@ -1196,6 +1206,14 @@ impl Mov {
                     } else {
                         app.virtual_cursor = Virtualcursor::Position {
                             pos: pos!(0, last_pos.y + 1),
+                        };
+                    }
+                }
+            } else if self.cursor_movement_bound_type == CurMovType::Block {
+                if app.letter_grid[last_pos.y].len() > 2 {
+                    if last_pos.x < app.letter_grid[last_pos.y].len() - 2 {
+                        app.virtual_cursor = Virtualcursor::Position {
+                            pos: pos!(last_pos.x + units, last_pos.y),
                         };
                     }
                 }
@@ -1223,7 +1241,21 @@ impl Mov {
     /// If the cursor hits the end of the line,
     /// it will jump to the start of the next line.
     pub fn wrap(self) -> Self {
-        Mov { wrap: true }
+        Mov {
+            cursor_movement_bound_type: CurMovType::Wrap,
+        }
+    }
+
+    pub fn freefloat(self) -> Self {
+        Mov {
+            cursor_movement_bound_type: CurMovType::Freefloat,
+        }
+    }
+
+    pub fn block(self) -> Self {
+        Mov {
+            cursor_movement_bound_type: CurMovType::Block,
+        }
     }
 }
 
