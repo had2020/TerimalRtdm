@@ -610,7 +610,7 @@ impl Key {
     /// to collect full input for typing you will need to make a loop within the loop.
     /// otherwise everyother key will be missing from `collect_presses()` method.
     pub fn pressed(self, app: &mut App, key: KeyType) -> bool {
-        if self.case_sen == true {
+        if self.case_sen == false {
             if format!("{:?}", app.keypressed).eq_ignore_ascii_case(&format!("{:?}", key)) {
                 if self.clear_non_lead_text == true {
                     clear_nonlead(app);
