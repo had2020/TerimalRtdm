@@ -1,3 +1,17 @@
+<details>
+<summary>Table of Contents</summary>
+
+- [⏱️ Quickstart](#quickstart)
+- [📚 Documentation](#documentation)
+- [🧩 Templates](#templates)
+- [👁️ Built with TerimalRtdm](#built-with-TerimalRtdm)
+- [👍 Alternatives](#alternatives)
+- [⌨️ Contributing](#contributing)
+- [🏆 Acknowledgements](#acknowledgements)
+- [📄 License](#license)
+
+</details>
+
 ## TerimalRtdm
 Dependencless, Ideomatic, Rust Terimal Interface Library for quick CUIs when you need a tool ready pronto!
 
@@ -39,18 +53,25 @@ Dependencless, Ideomatic, Rust Terimal Interface Library for quick CUIs when you
 - Simple app loop with App, and ideomatic methods
 - No heavy dependencies, just ANSI escapes
 
-
-
-## ⭐️ Show support by leaving a star. Check out Github for up to date docs
+## ⭐️ Support futher development, with a star!
 
 [![GitHub](https://img.shields.io/badge/github-had2020%2FTerimalRtdm-blue?logo=github)](https://github.com/had2020/TerimalRtdm)
 
-## 👉 Major Usage in another projects!
-Note these projects are outdated but still demonstrate capabilities of the crate.
-Both projects were built with verison 0.0.3, which was less Ideomatic, and missing a lot of higher level features.
+## Other Applications in projects!
+Note these projects are outdated, but still demonstrate capabilities of the crate.
+Both projects were built with verison 0.0.3, which is less ideomatic, and missing a lot of higher level features.
 
 - For a Nano like text editer
 https://github.com/had2020/Runo
 
 - For a terimal based web browser.
 https://github.com/had2020/RusosBr
+
+## License
+
+This project is licensed under the MIT License.
+
+Copyright © Hadrian Lazic
+
+See the [LICENSE](./LICENSE) file for details.
+
