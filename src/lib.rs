@@ -723,7 +723,7 @@ pub enum Color {
 }
 
 /// Converts the Color enum into appropriate codes for fore and back grounds
-pub fn color_to_ansi_code(color: &Color, is_bg: bool) -> i8 {
+pub fn color_to_ansi_code(color: &Color, is_bg: bool) -> i16 {
     match color {
         Color::Black => {
             if is_bg {
