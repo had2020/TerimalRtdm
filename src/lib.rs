@@ -43,8 +43,8 @@ pub enum LeadOnly {
 #[derive(Debug)]
 pub struct Letter {
     pub ch: char,
-    pub fg_code: i8,
-    pub bg_code: i8,
+    pub fg_code: i16,
+    pub bg_code: i16,
     pub style: i8,
     pub when: LeadOnly,
 }
@@ -1037,12 +1037,12 @@ pub fn render(app: &App) {
                 ChangeStyle::No => cell.style,
             };
 
-            let fg_code: i8 = match app.virtual_cursor_theme.fg_code {
+            let fg_code: i16 = match app.virtual_cursor_theme.fg_code {
                 ChangeColor::No => cell.fg_code,
                 ChangeColor::On { color } => color_to_ansi_code(&color, false),
             };
 
-            let bg_code: i8 = match app.virtual_cursor_theme.bg_code {
+            let bg_code: i16 = match app.virtual_cursor_theme.bg_code {
                 ChangeColor::No => cell.bg_code,
                 ChangeColor::On { color } => color_to_ansi_code(&color, false),
             };
