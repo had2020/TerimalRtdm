@@ -16,7 +16,7 @@
 Dependencless, Ideomatic, Rust Terimal Interface Library for quick CUIs when you need a tool ready pronto!
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/e6b42860-764c-4199-8985-5c3ad87a2616" alt="demo" />
+  <img src="https://github.com/user-attachments/assets/f0b8b933-910f-473c-8d1f-ef9c9d54ca1c" alt="demo" />
 </p>
 
 <div align="center">
