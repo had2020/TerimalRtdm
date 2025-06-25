@@ -719,7 +719,7 @@ pub enum Color {
     BrightCyan,
     BrightWhite,
     Default { back: bool },
-    Custom { id: i8 }, // Max is 255
+    Custom { id: i16 }, // Max is 255
 }
 
 /// Converts the Color enum into appropriate codes for fore and back grounds
