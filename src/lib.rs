@@ -700,7 +700,7 @@ impl Default for TextColorOption {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Color {
     Black,
     Red,
