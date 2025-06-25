@@ -987,7 +987,7 @@ pub fn real_cursor_move(position: Pos) {
     io::stdout().flush().unwrap();
 }
 
-pub fn real_cursor_visibility(visable: bool) {
+pub fn show_cursor(visable: bool) {
     if visable == true {
         print!("\x1B[?25h");
     } else {
@@ -1289,6 +1289,13 @@ pub fn get_cur_pos(app: &mut App) -> Pos {
 /// Returns the key which is pressed under this iteration.
 pub fn key_pressed(app: &App) -> String {
     format!("{:?}", &app.keypressed)
+}
+
+/// Restores the default terminal starting settings, like the cursor being visable and default text alignment.
+/// This should be done to reduce user confustion at the last line of your program before it has any exit.
+pub fn restore_terminal() {
+    raw_mode(false);
+    show_cursor(false);
 }
 
 /*
