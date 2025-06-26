@@ -91,11 +91,19 @@ fn main() {
 
 ## Documentation
 
-Todo documentation.md
+Todo documentation.md and link
+
+## Templates
+
+[See the TerimalRtdm Boiler Plate Repository](https://github.com/had2020/TerimalRtdm-examples)
+
+-> More details documented in the Boiler Plate Repo.
 
 ## ⭐️ Support futher development, with a <mark>star</mark>!
 
 [![GitHub](https://img.shields.io/badge/github-had2020%2FTerimalRtdm-blue?logo=github)](https://github.com/had2020/TerimalRtdm)
+
+https://github.com/had2020/TerimalRtdm
 
 ## Built with TerimalRtdm
 Note these projects are outdated, but still demonstrate capabilities of the crate.
