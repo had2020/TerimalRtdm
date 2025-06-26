@@ -5,7 +5,7 @@
 - [📚 Documentation](#documentation)
 - [🧩 Templates](#templates)
 - [👁️ Built with TerimalRtdm](#built-with-TerimalRtdm)
-- [⭐️ Leave a star!](#⭐️-Support-futher-development,-with-a-<mark>star</mark>!
+- [⭐️ Leave a star!](#⭐️-Support-futher-development,-with-a-<mark>star</mark>!)
 - [⌨️ Contributing](#contributing)
 - [📄 License](#license)
 
