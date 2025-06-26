@@ -4,10 +4,9 @@
 - [⏱️ Quickstart](#quickstart)
 - [📚 Documentation](#documentation)
 - [🧩 Templates](#templates)
-- [👍 Alternatives](#alternatives)
-- [⌨️ Contributing](#contributing)
 - [👁️ Built with TerimalRtdm](#built-with-TerimalRtdm)
-- [🏆 Acknowledgements](#acknowledgements)
+- [⭐️ Leave a star!](#⭐️-Support-futher-development,-with-a-<mark>star</mark>!)
+- [⌨️ Contributing](#contributing)
 - [📄 License](#license)
 
 </details>
@@ -92,21 +91,32 @@ fn main() {
 
 ## Documentation
 
-## Templates 
+Todo documentation.md and link
 
-## ⭐️ Support futher development, with a <mark>star<mark>!
+## Templates
+
+[See the TerimalRtdm Boiler Plate Repository](https://github.com/had2020/TerimalRtdm-examples)
+
+-> More details documented in the Boiler Plate Repo.
+
+## ⭐️ Support futher development, with a <mark>star</mark>!
 
 [![GitHub](https://img.shields.io/badge/github-had2020%2FTerimalRtdm-blue?logo=github)](https://github.com/had2020/TerimalRtdm)
+
+https://github.com/had2020/TerimalRtdm
 
 ## Built with TerimalRtdm
 Note these projects are outdated, but still demonstrate capabilities of the crate.
 Both projects were built with verison 0.0.3, which is less ideomatic, and missing a lot of higher level features.
 
 - For a Nano like text editer
-https://github.com/had2020/Runo
+[Runo](https://github.com/had2020/Runo)
 
 - For a terimal based web browser.
-https://github.com/had2020/RusosBr
+[RusosBr](https://github.com/had2020/RusosBr)
+
+- Not outdated but, WIP vim clone in Rust.
+[Hadrium](https://github.com/had2020/Hadrium)
 
 ## License
 

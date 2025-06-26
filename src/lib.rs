@@ -1,3 +1,17 @@
+/*
+▄▖    ▘     ▜ ▄▖▗  ▌   
+▐ █▌▛▘▌▛▛▌▀▌▐ ▙▘▜▘▛▌▛▛▌
+▐ ▙▖▌ ▌▌▌▌█▌▐▖▌▌▐▖▙▌▌▌▌
+*/
+
+// TerimalRtdm under MIT License 
+// Crate made by Hadrian Lazic
+
+// Dependencless, Ideomatic, Rust Terimal 
+// Interface Library for quick CUIs,
+// when you need a tool ready pronto!
+                       
+
 use std::io::{self, Read, Write};
 use std::thread::sleep;
 use std::time::Duration;
