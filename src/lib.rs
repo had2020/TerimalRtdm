@@ -49,11 +49,13 @@ pub struct Letter {
     pub when: LeadOnly,
 }
 
+/*
 #[derive(Debug)]
 pub struct LeadkeySequence {
     pub lead_key: String,
     pub following_sequence: Vec<String>,
 }
+*/
 
 /// Global app memory access point, where program data is stored, for various perposes.
 pub struct App {
