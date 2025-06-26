@@ -25,6 +25,22 @@
 TerimalRtdm is an intermediate mode terminal UI framework. This means each update to the interface is triggered by user input. It works in any Rust binary, but requires some light setup and a sequence of steps to initialize properly. That said, the setup process is simpler, and more versatile than most other UI crates.
 
 ## Structuring
+First off we need add the crate and use it in our code, in case you have not done that already.
+
+Add our crate to your toml:
+```shell
+cargo add TerimalRtdm 
+```
+
+Then declare it's usage:
+```rust
+use TerimalRtdm::*;
+```
+
+You will first need to setup the app variable, which is a struct that holds the core information, such as the key pressed, cursor position used to move the terminal cursor, and the rendering pool.
+
+The majority of the program will run within a single loop, that iterates per each input. 
+
 
 ## App Variable
 
