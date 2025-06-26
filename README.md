@@ -4,10 +4,9 @@
 - [⏱️ Quickstart](#quickstart)
 - [📚 Documentation](#documentation)
 - [🧩 Templates](#templates)
-- [👍 Alternatives](#alternatives)
-- [⌨️ Contributing](#contributing)
 - [👁️ Built with TerimalRtdm](#built-with-TerimalRtdm)
-- [🏆 Acknowledgements](#acknowledgements)
+- [⭐️ Leave a star!](#⭐️-Support-futher-development,-with-a-<mark>star</mark>!
+- [⌨️ Contributing](#contributing)
 - [📄 License](#license)
 
 </details>
@@ -92,9 +91,9 @@ fn main() {
 
 ## Documentation
 
-## Templates 
+Todo documentation.md
 
-## ⭐️ Support futher development, with a <mark>star<mark>!
+## ⭐️ Support futher development, with a <mark>star</mark>!
 
 [![GitHub](https://img.shields.io/badge/github-had2020%2FTerimalRtdm-blue?logo=github)](https://github.com/had2020/TerimalRtdm)
 
