@@ -115,7 +115,7 @@ Both projects were built with verison 0.0.3, which is less ideomatic, and missin
 - For a terimal based web browser.
 [RusosBr](https://github.com/had2020/RusosBr)
 
-- WIP vim clone in Rust.
+- Not outdated but, WIP vim clone in Rust.
 [Hadrium](https://github.com/had2020/Hadrium)
 
 ## License
