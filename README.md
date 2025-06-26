@@ -110,10 +110,13 @@ Note these projects are outdated, but still demonstrate capabilities of the crat
 Both projects were built with verison 0.0.3, which is less ideomatic, and missing a lot of higher level features.
 
 - For a Nano like text editer
-https://github.com/had2020/Runo
+[Runo](https://github.com/had2020/Runo)
 
 - For a terimal based web browser.
-https://github.com/had2020/RusosBr
+[RusosBr](https://github.com/had2020/RusosBr)
+
+- WIP vim clone in Rust.
+[Hadrium](https://github.com/had2020/Hadrium)
 
 ## License
 
