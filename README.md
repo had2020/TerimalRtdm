@@ -4,9 +4,9 @@
 - [⏱️ Quickstart](#quickstart)
 - [📚 Documentation](#documentation)
 - [🧩 Templates](#templates)
-- [👁️ Built with TerimalRtdm](#built-with-TerimalRtdm)
 - [👍 Alternatives](#alternatives)
 - [⌨️ Contributing](#contributing)
+- [👁️ Built with TerimalRtdm](#built-with-TerimalRtdm)
 - [🏆 Acknowledgements](#acknowledgements)
 - [📄 License](#license)
 
@@ -53,11 +53,52 @@ Dependencless, Ideomatic, Rust Terimal Interface Library for quick CUIs when you
 - Simple app loop with App, and ideomatic methods
 - No heavy dependencies, just ANSI escapes
 
-## ⭐️ Support futher development, with a star!
+## Quickstart
+
+TerimalRtdm works in Rust binarys, follow these steps to setup a boiler plate, or check out the [TerimalRtdm Examples Repository](https://github.com/had2020/TerimalRtdm-examples)
+
+<mark>1.) Add Crate.<mark> 
+
+```shell
+cargo add TerimalRtdm
+```
+
+<mark>2.) Then use this boiler plate.</mark>
+
+```rust
+use ::TerimalRtdm::*;
+
+fn main() {
+    let mut app = App::new(); // Holds all interface state variables.
+    clear(&mut app); // Clear the screen competely.
+    raw_mode(true); // Enabled for correct showing of elements at specific positions.
+    show_cursor(false); // By default it is set to show. The cursor is off, since we don't need to move it.
+
+    loop { // Each iteration is run by each input. As the crates are designed as a intermediate type UI.
+        Text::new().show(&mut app, "Hello world", pos!(0, 0));
+
+        // Example exit key
+        if Key::o().pressed(&mut app, KeyType::Esc) {
+            break;
+        }
+
+        render(&app);
+        collect_presses(&mut app);
+    }
+
+    restore_terminal(); // Should be done at any exit of your program to restore the terminal defaults.
+}
+```
+
+## Documentation
+
+## Templates 
+
+## ⭐️ Support futher development, with a <mark>star<mark>!
 
 [![GitHub](https://img.shields.io/badge/github-had2020%2FTerimalRtdm-blue?logo=github)](https://github.com/had2020/TerimalRtdm)
 
-## Other Applications in projects!
+## Built with TerimalRtdm
 Note these projects are outdated, but still demonstrate capabilities of the crate.
 Both projects were built with verison 0.0.3, which is less ideomatic, and missing a lot of higher level features.
 
