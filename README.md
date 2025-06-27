@@ -95,13 +95,9 @@ fn main() {
 
 -> More details documented in the Boiler Plate Repo.
 
-## ⭐️ Support futher development, with a <mark>star</mark>!
-
-[![GitHub](https://img.shields.io/badge/github-had2020%2FTerimalRtdm-blue?logo=github)](https://github.com/had2020/TerimalRtdm)
-
-https://github.com/had2020/TerimalRtdm
-
 ## Fast Documentation
+https://github.com/had2020/TerimalRtdm/blob/main/documentation.md
+
 TerimalRtdm is an intermediate mode terminal UI framework. This means each update to the interface is triggered by user input. It works in any Rust binary, but requires some light setup and a sequence of steps to initialize properly. That said, the setup process is simpler, and more versatile than most other UI crates.
 
 🖱️ You can `click` each instruction to open, and see code changes.
@@ -411,6 +407,12 @@ if Key::o().no_clear().pressed(&mut app, KeyType::l) {
 | `wrap`     | The default; acts like nano or a normal text editor, pushing the cursor to the start of the next line once they reach the end. |
 
 </details>
+
+## ⭐️ Support futher development, with a <mark>star</mark>!
+
+[![GitHub](https://img.shields.io/badge/github-had2020%2FTerimalRtdm-blue?logo=github)](https://github.com/had2020/TerimalRtdm)
+
+https://github.com/had2020/TerimalRtdm
 
 ## Built with TerimalRtdm
 Note these projects are outdated, but still demonstrate capabilities of the crate.
