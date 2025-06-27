@@ -90,8 +90,9 @@ fn main() {
 ```
 
 ## Documentation
+Read up to make an app quickly!
 
-Todo documentation.md and link
+https://github.com/had2020/TerimalRtdm/blob/main/documentation.md
 
 ## Templates
 
