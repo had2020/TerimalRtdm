@@ -1,16 +1,15 @@
 /*
-▄▖    ▘     ▜ ▄▖▗  ▌   
+▄▖    ▘     ▜ ▄▖▗  ▌
 ▐ █▌▛▘▌▛▛▌▀▌▐ ▙▘▜▘▛▌▛▛▌
 ▐ ▙▖▌ ▌▌▌▌█▌▐▖▌▌▐▖▙▌▌▌▌
 */
 
-// TerimalRtdm under MIT License 
+// TerimalRtdm under MIT License
 // Crate made by Hadrian Lazic
 
-// Dependencless, Ideomatic, Rust Terimal 
+// Dependencless, Ideomatic, Rust Terimal
 // Interface Library for quick CUIs,
 // when you need a tool ready pronto!
-                       
 
 use std::io::{self, Read, Write};
 use std::thread::sleep;
@@ -71,7 +70,7 @@ pub struct LeadkeySequence {
 }
 */
 
-/// Global app memory access point, where program data is stored, for various perposes.
+/// Global app memory access point, where program data is stored, for various purposes.
 pub struct App {
     pub key_buffer: [u8; 3],
     pub keypressed: KeyType,
