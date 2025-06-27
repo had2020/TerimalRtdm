@@ -242,7 +242,7 @@ app.enable_f_row_and_arrow = true;
 
 <details>
 
-<summary>🔟 Last, we should have our last line <mark>restore the terminal settings</mark> like raw capture mode and cursor visibility.</summary>
+<summary>🔟 Lastly, we should have our last line <mark>restore the terminal settings</mark> like raw capture mode and cursor visibility.</summary>
 
 ```rust
 use TerimalRtdm::*;
