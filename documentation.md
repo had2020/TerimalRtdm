@@ -24,11 +24,11 @@
 TerimalRtdm is an intermediate mode terminal UI framework. This means each update to the interface is triggered by user input. It works in any Rust binary, but requires some light setup and a sequence of steps to initialize properly. That said, the setup process is simpler, and more versatile than most other UI crates.
 
 ## Structuring
-You can click each instruction to open, and see code changes.
+🖱️ You can `click` each instruction to open, and see code changes.
 
 <details>
   
-<summary>1️⃣ First off we need add the crate and use it in our code, in case you have not done that already.</summary>
+<summary>1️⃣ First off we need <mark>add the crate</mark> and use it in our code, in case you have not done that already.</summary>
 
 Add our crate to your toml:
 ```shell
@@ -44,7 +44,7 @@ use TerimalRtdm::*;
 
 <details>
 
-<summary>2️⃣ You will need to setup the `App` variable, which is a struct that holds the core information, such as the key pressed, cursor position used to move the terminal cursor, and the rendering pool.</summary>
+<summary>2️⃣ You will need to <mark>setup the `App` variable</mark>, which is a struct that holds the core information, such as the key pressed, cursor position used to move the terminal cursor, and the rendering pool.</summary>
 
 ```rust
 use TerimalRtdm::*;
@@ -59,7 +59,7 @@ fn main() {
 
 <details>
 
-<summary>3️⃣ Rust prints to the terimal on start up, so let's `clear` that.</summary>
+<summary>3️⃣ Rust prints to the terimal on start up, so let's <mark>clear</mark> that.</summary>
 
 ```rust
 use TerimalRtdm::*;
@@ -75,7 +75,7 @@ fn main() {
 
 <details>
 
-<summary>4️⃣ You can choose the show or hide the cursor.</summary>
+<summary>4️⃣ You can choose the <mark>show or hide the cursor</mark>.</summary>
 
 ```rust
 use TerimalRtdm::*;
@@ -92,7 +92,7 @@ fn main() {
 
 <details>
 
-<summary>5️⃣ The majority of the program will run within a single `loop`, that iterates per each input.</summary>
+<summary>5️⃣ The majority of the program will run within a single <mark>loop</mark>, that iterates per each input.</summary>
 
 ```rust
 use TerimalRtdm::*;
@@ -112,7 +112,7 @@ fn main() {
 
 <details>
 
-<summary>6️⃣ Showing some basic text. This crate provides futher text features then this, see `Text Elements`.</summary>
+<summary>6️⃣ <mark>Showing some basic text.</mark> </summary>
 
 ```rust
 use TerimalRtdm::*;
@@ -129,11 +129,22 @@ fn main() {
 }
 ```
 
+Optionally you can change the text's style, position, foreground(color of the text) and background.
+
+```rust
+Text::new()
+    .foreground(Color::Black)
+    .background(Color::Magenta)
+    .style(Style::Bold)
+    .show(&mut app, "Replace", pos!(0, 13)); // each x and y is one char and "Hello world".len() returns 11, so we start at 13.
+```
+Keep in mind text is layered with the bottommost being the highest drawn layer, as your code goes down linearly. 
+
 </details>
 
 <details>
 
-<summary>7️⃣ Simple check for input on our escape, this is optional, but something tells me, you want a way to leave program eventually no matter how good it is.</summary>
+<summary>7️⃣ Simple <mark>check for input</mark> on our escape, this is optional, but something tells me, you might want a way to leave program eventually no matter how good it is.</summary>
 
 ```rust
 use TerimalRtdm::*;
@@ -158,7 +169,7 @@ fn main() {
 
 <details>
 
-<summary>8️⃣ Then at the end of the loop we can render the text.</summary>
+<summary>8️⃣ Then at the end of the loop we can <mark>render</mark> all our text.</summary>
 
 ```rust
 use TerimalRtdm::*;
@@ -185,7 +196,7 @@ fn main() {
 
 <details>
 
-<summary>9️⃣ Last but not least we should collect the current press in our iteration of the loop.</summary>
+<summary>9️⃣ Last but not least we should <mark>collect the current press</mark> in our iteration of the loop.</summary>
 
 ```rust
 use TerimalRtdm::*;
@@ -207,12 +218,13 @@ fn main() {
   }
 }
 ```
+This allows us to check for this input next loop.
 
 </details>
 
 <details>
 
-<summary>🔟 Last, we should have our last line restore the terminal settings like raw capture mode and cursor visibility.</summary>
+<summary>🔟 Last, we should have our last line <mark>restore the terminal settings</mark> like raw capture mode and cursor visibility.</summary>
 
 ```rust
 use TerimalRtdm::*;
@@ -239,27 +251,6 @@ fn main() {
 
 </details>
 
-## App Variable
-
-## Raw Mode
-
-## Cursor Visibility
-
-## Input Loop
-
-## Collecting Loop Press
-
-## Text Elements
-
-## Checking Key Inputs
-
-## Rendering
-
-## Moving The Cursor
-
-## Restore Terminal
-
-## Advanced Features
 
 ## ⭐️ Support futher development, with a <mark>star</mark>!
 
