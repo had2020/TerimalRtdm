@@ -28,7 +28,7 @@ You can click each instruction to open, and see code changes.
 
 <details>
   
-<summary>1.) First off we need add the crate and use it in our code, in case you have not done that already.</summary>
+<summary>1️⃣ First off we need add the crate and use it in our code, in case you have not done that already.</summary>
 
 Add our crate to your toml:
 ```shell
@@ -44,7 +44,7 @@ use TerimalRtdm::*;
 
 <details>
 
-<summary>2.) You will need to setup the `App` variable, which is a struct that holds the core information, such as the key pressed, cursor position used to move the terminal cursor, and the rendering pool.</summary>
+<summary>2️⃣ You will need to setup the `App` variable, which is a struct that holds the core information, such as the key pressed, cursor position used to move the terminal cursor, and the rendering pool.</summary>
 
 ```rust
 use TerimalRtdm::*;
@@ -59,7 +59,7 @@ fn main() {
 
 <details>
 
-<summary>3.) Rust prints to the terimal on start up, so let's `clear` that.</summary>
+<summary>3️⃣ Rust prints to the terimal on start up, so let's `clear` that.</summary>
 
 ```rust
 use TerimalRtdm::*;
@@ -75,7 +75,7 @@ fn main() {
 
 <details>
 
-<summary>4.) You can choose the show or hide the cursor.</summary>
+<summary>4️⃣ You can choose the show or hide the cursor.</summary>
 
 ```rust
 use TerimalRtdm::*;
@@ -92,7 +92,7 @@ fn main() {
 
 <details>
 
-<summary>5.) The majority of the program will run within a single `loop`, that iterates per each input.</summary>
+<summary>5️⃣ The majority of the program will run within a single `loop`, that iterates per each input.</summary>
 
 ```rust
 use TerimalRtdm::*;
@@ -112,7 +112,7 @@ fn main() {
 
 <details>
 
-<summary>6.) Showing some basic text. This crate provides futher text features then this, see `Text Elements`.</summary>
+<summary>6️⃣ Showing some basic text. This crate provides futher text features then this, see `Text Elements`.</summary>
 
 ```rust
 use TerimalRtdm::*;
@@ -133,7 +133,7 @@ fn main() {
 
 <details>
 
-<summary>7.) Simple check for input on our escape, this is optional, but something tells me, you want a way to leave program eventually no matter how good it is.</summary>
+<summary>7️⃣ Simple check for input on our escape, this is optional, but something tells me, you want a way to leave program eventually no matter how good it is.</summary>
 
 ```rust
 use TerimalRtdm::*;
@@ -158,7 +158,7 @@ fn main() {
 
 <details>
 
-<summary>8.) Then at the end of the loop we can render the text.</summary>
+<summary>8️⃣ Then at the end of the loop we can render the text.</summary>
 
 ```rust
 use TerimalRtdm::*;
@@ -185,7 +185,7 @@ fn main() {
 
 <details>
 
-<summary>9.) Last but not least we should collect the current press in our iteration of the loop.</summary>
+<summary>9️⃣ Last but not least we should collect the current press in our iteration of the loop.</summary>
 
 ```rust
 use TerimalRtdm::*;
@@ -212,7 +212,7 @@ fn main() {
 
 <details>
 
-<summary>10.) Last, we should have our last line restore the terminal settings like raw capture mode and cursor visibility.</summary>
+<summary>🔟 Last, we should have our last line restore the terminal settings like raw capture mode and cursor visibility.</summary>
 
 ```rust
 use TerimalRtdm::*;
