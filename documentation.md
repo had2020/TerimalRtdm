@@ -4,7 +4,7 @@
 ## Basics
 TerimalRtdm is an intermediate mode terminal UI framework. This means each update to the interface is triggered by user input. It works in any Rust binary, but requires some light setup and a sequence of steps to initialize properly. That said, the setup process is simpler, and more versatile than most other UI crates.
 
-## All features, correlated with their placement in the relevant program structure.
+## All features, correlated with placement in relevant program structure.
 🖱️ You can `click` each instruction to open, and see code changes.
 
 <details>
@@ -109,23 +109,38 @@ fn main() {
   }
 }
 ```
+Text can be moved around the screen with the `Pos` struct, which moves text around by letter units, where the text should start to be displayed.
+If you want to see the length of the text use `your_text_var.len()` with the variable being a `&str` type. This returns the length of chars that will be printed with the first one starting at x in `Pos`.
 
-Optionally you can change the text's style, position, foreground(color of the text) and background.
+Optionally: You can change the text's style, position, foreground(color of the text) and background.
 
 ```rust
 Text::new()
-    .foreground(Color::Black)
+    .foreground(Color::Black) // Check Color and style enum's for varient options!
     .background(Color::Magenta)
     .style(Style::Bold)
-    .show(&mut app, "Replace", pos!(0, 13)); // each x and y is one char and "Hello world".len() returns 11, so we start at 13.
+    .show(&mut app, "Hi", pos!(13, 0)); // each x and y is one char and "Hello world".len() returns 11, so we start at 13.
 ```
-Keep in mind text is layered with the bottommost being the highest drawn layer, as your code goes down linearly. 
+Keep in mind: Text is layered with the bottommost being the highest drawn layer, as your code goes down linearly. 
+
+In case you are displaying a text under a key being pressed, you can toggle it's vanishing under other keys.
+```rust
+Text::new()
+    .vanish(false)
+    .show(&mut app, "Test", pos!(0, 1)); // displays on the second line of the screen, as `y` is set to `1`.
+```
 
 </details>
 
 <details>
 
 <summary>7️⃣ Simple <mark>check for input</mark> on our escape, this is optional, but something tells me, you might want a way to leave program eventually no matter how good it is.</summary>
+
+
+`KeyType` is an enum representing **all possible key combinations**.  
+If a key is missing on the crate's end, it will default to: `KeyType::Unknown`
+
+`Key` is a struct used for **optional parameters**, following idiomatic Rust patterns.
 
 ```rust
 use TerimalRtdm::*;
@@ -143,6 +158,14 @@ fn main() {
     }
     // Rest of the code ...
   }
+}
+```
+
+You can also add the `no_clear()` impl on `Key::o()` if you spefied text to show only under the specific input, and does not effect that text, which is useful for cursor movement.
+
+```rust
+if Key::o().no_clear().pressed(&mut app, KeyType::Esc) { // Example of using no_clear().
+  break;
 }
 ```
 
