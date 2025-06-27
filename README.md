@@ -96,7 +96,7 @@ fn main() {
 -> More details documented in the Boiler Plate Repo.
 
 ## Fast Documentation
-https://github.com/had2020/TerimalRtdm/blob/main/documentation.md
+[Documentation](https://github.com/had2020/TerimalRtdm/blob/main/documentation.md)
 
 TerimalRtdm is an intermediate mode terminal UI framework. This means each update to the interface is triggered by user input. It works in any Rust binary, but requires some light setup and a sequence of steps to initialize properly. That said, the setup process is simpler, and more versatile than most other UI crates.
 
